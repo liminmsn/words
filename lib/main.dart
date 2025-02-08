@@ -1,59 +1,116 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    title: 'My app',
-    home: SafeArea(child: MyApp()),
-  ));
+  runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  var selectIndex = 0;
+  late List<Widget> pageArr;
+
+  @override
+  void initState() {
+    super.initState();
+    pageArr = [Home(callback: setSelectIndex), ScaffoldTest()];
+  }
+
+  void setSelectIndex(int idx) {
+    setState(() {
+      selectIndex = idx;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      child: Column(
-        children: [
-          MyAppBar(
-              title: Text('Example title',
-                  style: Theme.of(context).primaryTextTheme.titleLarge)),
-          const Expanded(
-            child: Center(
-              child: Text('Hello, world!'),
-            ),
+    return MaterialApp(
+      title: 'Namer App',
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+          title: const Text(
+            "My Home Page",
+            style: TextStyle(color: Colors.white),
           ),
-        ],
+        ),
+        body: pageArr[selectIndex],
       ),
     );
   }
 }
 
-class MyAppBar extends StatelessWidget {
-  const MyAppBar({super.key, required this.title});
-
-  final Widget title;
+class Home extends StatelessWidget {
+  final Function(int) callback;
+  const Home({super.key, required this.callback});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(color: Colors.yellow[500]),
-      child: Row(
-        children: [
-          const IconButton(
-            tooltip: 'Navigation menu',
-            icon: Icon(Icons.menu),
-            onPressed: null,
-          ),
-          Expanded(child: Text('hello')),
-          const IconButton(
-            icon: Icon(Icons.search),
-            tooltip: 'Search',
-            onPressed: null,
-          )
-        ],
+    return Center(
+      child: Builder(builder: (context) {
+        return Column(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.amber,
+              ),
+              padding: EdgeInsets.all(10),
+              margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Text('Hello, Flutter!'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                callback(1);
+              },
+              child: Text("A button"),
+            ),
+          ],
+        );
+      }),
+    );
+  }
+}
+
+class ScaffoldTest extends StatefulWidget {
+  const ScaffoldTest({super.key});
+
+  @override
+  State<ScaffoldTest> createState() => _ScaffoldTestState();
+}
+
+class _ScaffoldTestState extends State<ScaffoldTest> {
+  int _count = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Sample Code"),
+      ),
+      body: Center(
+        child: Text('You have pressed the button $_count times.'),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        child: Container(
+          height: 50,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => setState(() {
+          _count++;
+        }),
+        tooltip: 'Increment Counter',
+        child: const Icon(Icons.add),
       ),
     );
   }
