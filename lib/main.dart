@@ -16,8 +16,9 @@ class MyApp extends StatelessWidget {
       child: Column(
         children: [
           MyAppBar(
-              title: Text('Example title',
-                  style: Theme.of(context).primaryTextTheme.titleLarge)),
+            title: Text('Example title',
+                style: Theme.of(context).primaryTextTheme.titleLarge),
+          ),
           const Expanded(
             child: Center(
               child: Text('Hello, world!'),
