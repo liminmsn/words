@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 void main() {
   runApp(const MaterialApp(
     title: 'My app',
-    home: SafeArea(child: MainApp()),
+    home: SafeArea(child: MyApp()),
   ));
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
