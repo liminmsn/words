@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -31,20 +29,36 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  String body = "none";
   @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(
         children: [
-          const Text("data:"),
-          SizedBox(height: 10,),
+          Text("data: $body"),
+          SizedBox(height: 10),
           ElevatedButton(
-            onPressed: () async{
-              var res = await http.get(Uri.parse("https://jsonplaceholder.typicode.com/albums/1"));
-              print(res);
+            onPressed: () async {
+              var res = await http.get(
+                Uri.parse("https://jsonplaceholder.typicode.com/albums/1"),
+              );
+              if (res.statusCode == 200) {
+                setState(() {
+                  body = res.body;
+                });
+              }
             },
-            child: Icon(Icons.http_outlined),
-          )
+            child: Icon(
+              Icons.http_outlined,
+            ),
+          ),
+          SizedBox(height: 10),
+          ElevatedButton(
+            onPressed: () => setState(() {
+              body = "none";
+            }),
+            child: Icon(Icons.clear),
+          ),
         ],
       ),
     );
