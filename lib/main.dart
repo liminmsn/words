@@ -22,7 +22,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.blue, // 设置状态栏背景色
       statusBarIconBrightness: Brightness.dark, // 设置状态栏图标的颜色（浅色）
     ));
 
@@ -40,7 +39,7 @@ class _MyAppState extends State<MyApp> {
       themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
         appBar: AppBar(
-          title: Text("福利兔"),
+          title: Text("Welfare Rabbit"),
         ),
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(

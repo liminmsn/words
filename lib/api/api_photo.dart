@@ -1,9 +1,9 @@
 import 'package:html/dom.dart';
 
 interface class YImg {
-  late String src;
   late String alt;
   late String data;
+  late String detail;
   late String url;
 }
 
@@ -16,15 +16,16 @@ class ApiPhoto {
     for (var element in itemarr) {
       var img_ = element.getElementsByTagName("img")[0];
       var span_ = element.getElementsByClassName("item-num")[0];
+      var a_ = element.getElementsByClassName("item-link")[0];
       var img = YImg();
       img.alt = img_.attributes['alt'] ?? "null";
       img.data = img_.attributes['data-original'] ?? "null";
-      img.src = img_.attributes['src'] ?? "null";
-      img.url = span_.nodes[0]
+      img.detail = span_.nodes[0]
           .toString()
           .replaceAll('\n', '')
           .replaceAll('"', '')
           .replaceAll('\t', '');
+      img.url = a_.attributes['href'] ?? "null";
       imgs.add(img);
     }
   }

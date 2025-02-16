@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/net/request.dart';
+import 'package:words/view/detail/detail_home.dart';
 
 class ViewHome extends StatefulWidget {
   const ViewHome({super.key});
@@ -67,6 +68,12 @@ class _YCardState extends State<YCard> {
         // ScaffoldMessenger.of(
         //   context,
         // ).showSnackBar(const SnackBar(content: Text('Tap')));
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DetailHome(item: widget.yImg),
+          ),
+        );
       },
       child: Container(
         padding: const EdgeInsets.all(0),
@@ -118,7 +125,7 @@ class _YCardState extends State<YCard> {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            widget.yImg.url,
+                            widget.yImg.detail,
                             style: TextStyle(color: Colors.white, fontSize: 8),
                           ),
                         ],
