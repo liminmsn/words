@@ -79,7 +79,7 @@ class _YCardState extends State<YCard> {
         padding: const EdgeInsets.all(0),
         child: Stack(
           children: [
-            Image.network("https:${widget.yImg.data}"),
+            Image.network(widget.yImg.data),
             Positioned(
               child: const Stack(
                 children: [
