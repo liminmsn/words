@@ -28,7 +28,6 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       home: Scaffold(
-        appBar: null,
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
@@ -37,9 +36,9 @@ class _MyAppState extends State<MyApp> {
           }),
           destinations: [
             NavButton(
-              icon: Icons.home_outlined,
-              selectIcon: Icons.home,
-              label: "Home",
+              icon: Icons.image_outlined,
+              selectIcon: Icons.image,
+              label: "Photo",
             ),
             NavButton(
               icon: Icons.category_outlined,

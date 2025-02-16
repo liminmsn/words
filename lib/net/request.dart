@@ -5,7 +5,8 @@ import 'package:http/http.dart' as http;
 typedef RequCall = void Function(String dom);
 
 class YRequest {
-  static final String url = "https://fulitu.neocities.org";
+  // static final String url = "https://fulitu.neocities.org";
+  static final String url = "https://www.fulitu.cc/";
   late String urla = url;
   String? urlb;
   YRequest([this.urlb]) : urla = url + (urlb ?? '');
