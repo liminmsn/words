@@ -17,7 +17,7 @@ class YRequest {
       String htmlbody = utf8.decode(res.bodyBytes);
       r.call(htmlbody);
     } else {
-      r.call("<html><body></body></html>");
+      r.call("null");
     }
   }
 }
