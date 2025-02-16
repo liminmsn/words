@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
 import 'package:words/view/view_home.dart';
+import 'package:words/view/view_info.dart';
 import 'package:words/view/view_tags.dart';
 
 void main() {
@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<Widget> _views = [ViewHome(), ViewTags()];
+  final List<Widget> _views = [ViewHome(), ViewTags(), ViewInfo()];
   late int _selectedIndex = 0;
 
   @override
@@ -27,7 +27,21 @@ class _MyAppState extends State<MyApp> {
     ));
 
     return MaterialApp(
+      theme: ThemeData.light().copyWith(
+        // 亮色主题
+        primaryColor: Colors.blue, // 设置主色调
+        hintColor: Colors.green, // 设置强调色
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        // 暗色主题
+        primaryColor: Colors.purple, // 设置主色调
+        hintColor: Colors.amber, // 设置强调色
+      ),
+      themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
+        appBar: AppBar(
+          title: Text("福利兔"),
+        ),
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
@@ -43,6 +57,11 @@ class _MyAppState extends State<MyApp> {
             NavButton(
               icon: Icons.category_outlined,
               selectIcon: Icons.category,
+              label: "Category",
+            ),
+            NavButton(
+              icon: Icons.info_outline,
+              selectIcon: Icons.info,
               label: "Category",
             ),
           ],
