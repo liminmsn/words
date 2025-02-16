@@ -1,66 +1,75 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:words/view/view_home.dart';
+import 'package:words/view/view_tags.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final List<Widget> _views = [ViewHome(), ViewTags()];
+  late int _selectedIndex = 0;
+
+  @override
   Widget build(BuildContext context) {
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      statusBarColor: Colors.blue, // 设置状态栏背景色
+      statusBarIconBrightness: Brightness.dark, // 设置状态栏图标的颜色（浅色）
+    ));
+
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('My App'),
+        appBar: null,
+        body: _views[_selectedIndex],
+        bottomNavigationBar: NavigationBar(
+          selectedIndex: _selectedIndex,
+          onDestinationSelected: (value) => setState(() {
+            _selectedIndex = value;
+          }),
+          destinations: [
+            NavButton(
+              icon: Icons.home_outlined,
+              selectIcon: Icons.home,
+              label: "Home",
+            ),
+            NavButton(
+              icon: Icons.category_outlined,
+              selectIcon: Icons.category,
+              label: "Category",
+            ),
+          ],
         ),
-        body: Home(),
       ),
     );
   }
 }
 
-class Home extends StatefulWidget {
-  const Home({super.key});
+class NavButton extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final IconData? selectIcon;
+  const NavButton({
+    super.key,
+    required this.label,
+    required this.icon,
+    this.selectIcon,
+  });
 
-  @override
-  State<Home> createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-  String body = "none";
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          Text("data: $body"),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () async {
-              var res = await http.get(
-                Uri.parse("https://jsonplaceholder.typicode.com/albums/1"),
-              );
-              if (res.statusCode == 200) {
-                setState(() {
-                  body = res.body;
-                });
-              }
-            },
-            child: Icon(
-              Icons.http_outlined,
-            ),
-          ),
-          SizedBox(height: 10),
-          ElevatedButton(
-            onPressed: () => setState(() {
-              body = "none";
-            }),
-            child: Icon(Icons.clear),
-          ),
-        ],
-      ),
+    return NavigationDestination(
+      label: label,
+      icon: Icon(icon),
+      selectedIcon: Icon(selectIcon ?? icon),
     );
   }
 }
