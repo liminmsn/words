@@ -26,16 +26,12 @@ class _MyAppState extends State<MyApp> {
     ));
 
     return MaterialApp(
-      theme: ThemeData.light().copyWith(
-        // 亮色主题
-        primaryColor: Colors.blue, // 设置主色调
-        hintColor: Colors.green, // 设置强调色
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSwatch(
+          primarySwatch: Colors.red,
+        ),
       ),
-      darkTheme: ThemeData.dark().copyWith(
-        // 暗色主题
-        primaryColor: Colors.purple, // 设置主色调
-        hintColor: Colors.amber, // 设置强调色
-      ),
+      darkTheme: ThemeData.dark().copyWith(),
       themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
         appBar: AppBar(

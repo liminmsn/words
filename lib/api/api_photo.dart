@@ -18,7 +18,7 @@ class ApiPhoto {
       var span_ = element.getElementsByClassName("item-num")[0];
       var a_ = element.getElementsByClassName("item-link")[0];
       var img = YImg();
-      img.alt = img_.attributes['alt'] ?? "null";
+      img.alt = (img_.attributes['alt'] ?? "null").replaceAll(' ', '');
       img.data = 'https:${img_.attributes["data-original"]}';
       img.detail = span_.nodes[0]
           .toString()

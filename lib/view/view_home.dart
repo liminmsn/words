@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/net/request.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:words/view/detail/detail_home.dart';
 
 class ViewHome extends StatefulWidget {
@@ -65,9 +66,6 @@ class _YCardState extends State<YCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // ScaffoldMessenger.of(
-        //   context,
-        // ).showSnackBar(const SnackBar(content: Text('Tap')));
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -79,7 +77,10 @@ class _YCardState extends State<YCard> {
         padding: const EdgeInsets.all(0),
         child: Stack(
           children: [
-            Image.network(widget.yImg.data),
+            FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
+              image: widget.yImg.data,
+            ),
             Positioned(
               child: const Stack(
                 children: [

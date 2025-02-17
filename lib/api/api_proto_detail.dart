@@ -1,4 +1,3 @@
-import 'package:words/net/request.dart';
 import 'package:html/dom.dart';
 
 class YImgDetail {

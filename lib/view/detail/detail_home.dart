@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/api/api_proto_detail.dart';
 import 'package:words/net/request.dart';
@@ -25,27 +26,74 @@ class _DetailHomeState extends State<DetailHome> {
 
   @override
   Widget build(BuildContext context) {
-    final ScrollController _scrollController = ScrollController();
+    final ScrollController scrollController = ScrollController();
 
-    void _scrollToTop() {
-      _scrollController.animateTo(
+    void scrollToTop() {
+      scrollController.animateTo(
         0,
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     }
 
+    void onTap(YImgDetail y) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return SimpleDialog(
+            // title: Container(
+            //   padding: EdgeInsets.all(0),
+            //   child: ,
+            // ),
+            children: <Widget>[
+              Column(
+                children: [
+                  Text(y.title),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Image.network(y.src),
+                  )
+                ],
+              ),
+              Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        // 按钮点击事件
+                      },
+                      child: Row(
+                        children: [
+                          Text('Save'),
+                          Icon(Icons.download),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          );
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item.alt),
-        elevation: 0,
-        backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(
-        controller: _scrollController,
+        controller: scrollController,
         child: Column(
           children: [
-            for (var i = 0; i < imgs.length; i++) Image.network(imgs[i].src)
+            for (var i = 0; i < imgs.length; i++)
+              GestureDetector(
+                onTap: () => onTap(imgs[i]),
+                child: Image.network(imgs[i].src),
+              ),
           ],
         ),
       ),
@@ -54,7 +102,7 @@ class _DetailHomeState extends State<DetailHome> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: _scrollToTop,
+            onPressed: scrollToTop,
             child: Icon(Icons.expand_less),
           ),
         ],
