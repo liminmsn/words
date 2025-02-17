@@ -35,6 +35,9 @@ class _DetailHomeState extends State<DetailHome> {
         context: context,
         builder: (BuildContext context) {
           return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(6.0), // 设置为0.0以去掉圆角
+            ),
             child: Container(
               padding: EdgeInsets.all(16.0),
               child: Column(
@@ -43,32 +46,30 @@ class _DetailHomeState extends State<DetailHome> {
                   Text(
                     y.title,
                     style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
                       fontWeight: FontWeight.bold,
                       fontSize: 18.0,
                     ),
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 10.0),
                   Image.network(y.src),
-                  // Text('This is a custom dialog example.'),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 10.0),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      ElevatedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Row(
+                          children: [Text('Close'), Icon(Icons.close)],
+                        ),
+                      ),
+                      SizedBox(width: 10),
                       ElevatedButton(
                         onPressed: () {
                           // 按钮点击事件
                         },
                         child: Row(
                           children: [Text('Save'), Icon(Icons.download)],
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: Row(
-                          children: [Text('Close'), Icon(Icons.close)],
                         ),
                       ),
                     ],

@@ -73,69 +73,66 @@ class _YCardState extends State<YCard> {
           ),
         );
       },
-      child: Container(
-        padding: const EdgeInsets.all(0),
-        child: Stack(
-          children: [
-            FadeInImage.memoryNetwork(
-              placeholder: kTransparentImage,
-              image: widget.yImg.data,
-            ),
-            Positioned(
-              child: const Stack(
-                children: [
-                  Positioned(
-                    right: 0,
-                    top: -8,
-                    child: Icon(
-                      Icons.bookmark,
-                      size: 30,
-                      color: Colors.red,
-                    ),
+      child: Stack(
+        children: [
+          FadeInImage.memoryNetwork(
+            placeholder: kTransparentImage,
+            image: widget.yImg.data,
+          ),
+          Positioned(
+            child: const Stack(
+              children: [
+                Positioned(
+                  right: 0,
+                  top: -8,
+                  child: Icon(
+                    Icons.bookmark,
+                    size: 30,
+                    color: Colors.red,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                  color: Theme.of(context).colorScheme.shadow.withAlpha(150),
-                  padding: const EdgeInsets.all(5),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        widget.yImg.alt,
-                        // textAlign: TextAlign.end,
-                        style: TextStyle(
-                          fontSize: 12,
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Container(
+                color: Theme.of(context).colorScheme.shadow.withAlpha(150),
+                padding: const EdgeInsets.all(5),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Text(
+                      widget.yImg.alt,
+                      // textAlign: TextAlign.end,
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.white,
+                      ),
+                    ),
+                    SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.collections,
+                          size: 12,
                           color: Colors.white,
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Icon(
-                            Icons.collections,
-                            size: 12,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            widget.yImg.detail,
-                            style: TextStyle(color: Colors.white, fontSize: 8),
-                          ),
-                        ],
-                      )
-                    ],
-                  )),
-            ),
-          ],
-        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          widget.yImg.detail,
+                          style: TextStyle(color: Colors.white, fontSize: 8),
+                        ),
+                      ],
+                    )
+                  ],
+                )),
+          ),
+        ],
       ),
     );
   }
