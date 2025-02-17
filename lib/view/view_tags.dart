@@ -12,7 +12,21 @@ class _ViewTagsState extends State<ViewTags> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
-        children: [Text("hello")],
+        children: [
+          Text("hello"),
+          FutureBuilder<String>(
+            future: null,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                return Text('Data: ${snapshot.data}');
+              }
+            },
+          ),
+        ],
       ),
     );
   }

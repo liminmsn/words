@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:words/api/api_photo.dart';
+import 'package:words/components/y_loding.dart';
 import 'package:words/net/request.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:words/view/detail/detail_home.dart';
@@ -11,16 +12,10 @@ class ViewHome extends StatefulWidget {
 }
 
 class _ViewHomeState extends State<ViewHome> {
-  List<YImg> _imgs = [];
-
-  @override
-  void initState() {
-    super.initState();
-    YRequest().get((r) {
-      setState(() {
-        _imgs = ApiPhoto(r).imgs;
-      });
-    });
+  Future<List<YImg>> fetchData() async {
+    var body = await YRequest().get();
+    await Future.delayed(Duration(seconds: 2));
+    return ApiPhoto(body).imgs;
   }
 
   @override
@@ -29,19 +24,24 @@ class _ViewHomeState extends State<ViewHome> {
       child: Column(
         children: [
           Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(5),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
-                childAspectRatio: 2 / 3,
-                crossAxisCount: 3,
-              ),
-              itemCount: _imgs.length,
-              itemBuilder: (context, index) {
-                return YCard(
-                  yImg: _imgs[index],
-                  idx: index + 1,
+            child: Yloding.buildr(
+              future: fetchData,
+              builder: (context, snapshot) {
+                return GridView.builder(
+                  padding: const EdgeInsets.all(5),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 5,
+                    mainAxisSpacing: 5,
+                    childAspectRatio: 2 / 3,
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: snapshot.data?.length,
+                  itemBuilder: (context, index) {
+                    return YCard(
+                      yImg: snapshot.data![index],
+                      idx: index + 1,
+                    );
+                  },
                 );
               },
             ),
