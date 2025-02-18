@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:words/api/api_tags.dart';
 import 'package:words/components/y_loding.dart';
 import 'package:words/net/request.dart';
+import 'package:words/view/detail/detail_tag.dart';
 
 class ViewTags extends StatefulWidget {
   const ViewTags({super.key});
@@ -33,27 +34,41 @@ class _ViewTagsState extends State<ViewTags> {
                     itemBuilder: (BuildContext context, int index) {
                       return ClipRRect(
                         borderRadius: BorderRadius.all(Radius.circular(4)),
-                        child: Container(
-                          color: Theme.of(context).colorScheme.primaryContainer,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 6,
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => DetailTag(
+                                  item: snapshot.data![index],
                                 ),
                               ),
-                              SizedBox(width: 5),
-                              Text(
-                                snapshot.data![index].title,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                            );
+                          },
+                          child: Container(
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer,
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 6,
+                                  decoration: BoxDecoration(
                                     color:
                                         Theme.of(context).colorScheme.primary,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ],
+                                  ),
+                                ),
+                                SizedBox(width: 5),
+                                Text(
+                                  snapshot.data![index].title,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      color:
+                                          Theme.of(context).colorScheme.primary,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );

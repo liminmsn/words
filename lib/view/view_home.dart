@@ -21,7 +21,6 @@ class _ViewHomeState extends State<ViewHome> {
 
   Future<List<YImg>> fetchData() async {
     var body = await YRequest().get();
-    await Future.delayed(Duration(seconds: 2));
     return ApiPhoto(body).imgs;
   }
 }

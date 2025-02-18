@@ -14,7 +14,7 @@ class ApiTags {
     for (var element in lis) {
       var tag = YTag();
       var a = element.getElementsByTagName("a")[0];
-      tag.href = a.text;
+      tag.href = a.attributes['href'] ?? 'null';
       tag.title = a.text;
       tags.add(tag);
     }
