@@ -163,7 +163,7 @@ class _YCardState extends State<YCard> {
                   child: Icon(
                     Icons.bookmark,
                     size: 30,
-                    color: Theme.of(context).colorScheme.primaryContainer,
+                    color: Colors.red,
                   ),
                 ),
               ],
