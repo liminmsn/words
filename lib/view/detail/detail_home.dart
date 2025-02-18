@@ -15,135 +15,150 @@ class DetailHome extends StatefulWidget {
 }
 
 class _DetailHomeState extends State<DetailHome> {
+  List<YImgDetail> _imgs = [];
+  late double height = MediaQuery.of(context).size.height * 0.8;
+  late bool _showTop = false;
+
+  //加载数据
   Future<List<YImgDetail>> fetchData() async {
     var body = await YRequest(url_: widget.item.url).get();
     return ApiProtoDetail(body).imgs;
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final ScrollController scrollController = ScrollController();
+  //保存到本地
+  Future<void> saveImage(YImgDetail y) async {
+    final response = await http.get(Uri.parse(y.src));
+    final bytes = response.bodyBytes;
 
-    void scrollToTop() {
-      scrollController.animateTo(
-        0,
-        duration: Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      );
+    final filePath = await FlutterFileDialog.saveFile(
+      params: SaveFileDialogParams(
+          sourceFilePath: null, fileName: '${y.title}.jpg', data: bytes),
+    );
+
+    if (filePath != null) {
+      // Saved successfully
+    } else {
+      // Save operation cancelled
+      // print('Save operation cancelled');
     }
+  }
 
-    Future<void> saveImage(String url) async {
-      final response = await http.get(Uri.parse(url));
-      final bytes = response.bodyBytes;
-
-      final filePath = await FlutterFileDialog.saveFile(
-        params: SaveFileDialogParams(
-            sourceFilePath: null, fileName: 'image.jpg', data: bytes),
-      );
-
-      if (filePath != null) {
-        // Saved successfully
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Awesome Snackbar!'),
-            action: SnackBarAction(
-              label: 'Action',
-              onPressed: () {
-                // Code to execute.
-              },
+  // 弹窗提示
+  void onTap(YImgDetail y) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(6.0), // 设置为0.0以去掉圆角
+          ),
+          child: Container(
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  y.title,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
+                ),
+                SizedBox(height: 10.0),
+                Image.network(y.src),
+                SizedBox(height: 10.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: Row(
+                        children: [Text('Close'), Icon(Icons.close)],
+                      ),
+                    ),
+                    SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        // 按钮点击事件
+                        await saveImage(y);
+                      },
+                      child: Row(
+                        children: [Text('Save'), Icon(Icons.download)],
+                      ),
+                    ),
+                  ],
+                )
+              ],
             ),
           ),
         );
-      } else {
-        // Save operation cancelled
-        print('Save operation cancelled');
-      }
-    }
+      },
+    );
+  }
 
-    void onTap(YImgDetail y) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(6.0), // 设置为0.0以去掉圆角
-            ),
-            child: Container(
-              padding: EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    y.title,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  SizedBox(height: 10.0),
-                  Image.network(y.src),
-                  SizedBox(height: 10.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Row(
-                          children: [Text('Close'), Icon(Icons.close)],
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      ElevatedButton(
-                        onPressed: () async {
-                          // 按钮点击事件
-                          await saveImage(y.src);
-                        },
-                        child: Row(
-                          children: [Text('Save'), Icon(Icons.download)],
-                        ),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      );
-    }
+  getData() async {
+    var data = await fetchData();
+    setState(() => _imgs = data);
+  }
 
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  //大于500显示top按钮
+  void _scrollListener() {
+    if (_scrollController.offset >= height && !_showTop) {
+      setState(() => _showTop = true);
+    } else if (_scrollController.offset <= height && _showTop) {
+      setState(() => _showTop = false);
+    }
+  }
+
+  //返回顶部
+  void scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item.alt),
       ),
-      body: Yloding.buildr(
-        future: fetchData,
-        builder: (context, snapshot) {
-          return SingleChildScrollView(
-            controller: scrollController,
-            child: Column(
-              children: [
-                for (var i = 0; i < snapshot.data!.length; i++)
-                  GestureDetector(
-                    onTap: () => onTap(snapshot.data![i]),
-                    child: Image.network(snapshot.data![i].src),
-                  ),
-              ],
-            ),
-          );
-        },
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            for (var i = 0; i < _imgs.length; i++)
+              GestureDetector(
+                onTap: () => onTap(_imgs[i]),
+                child: Image.network(_imgs[i].src),
+              ),
+          ],
+        ),
       ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: scrollToTop,
-            child: Icon(Icons.expand_less),
-          ),
-        ],
-      ),
+      floatingActionButton: _showTop
+          ? FloatingActionButton(
+              onPressed: scrollToTop,
+              child: Icon(Icons.expand_less),
+            )
+          : null,
     );
   }
 }
