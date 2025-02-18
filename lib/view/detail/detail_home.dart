@@ -40,6 +40,18 @@ class _DetailHomeState extends State<DetailHome> {
 
       if (filePath != null) {
         // Saved successfully
+        Navigator.of(context).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Storage successful!'),
+            action: SnackBarAction(
+              label: 'Finish',
+              onPressed: () {
+                // Code to execute.
+              },
+            ),
+          ),
+        );
       } else {
         // Save operation cancelled
         // print('Save operation cancelled');
