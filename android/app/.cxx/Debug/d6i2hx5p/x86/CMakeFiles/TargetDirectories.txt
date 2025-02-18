@@ -1,0 +1,2 @@
+C:/Users/limin/Desktop/words/android/app/.cxx/Debug/d6i2hx5p/x86/CMakeFiles/edit_cache.dir
+C:/Users/limin/Desktop/words/android/app/.cxx/Debug/d6i2hx5p/x86/CMakeFiles/rebuild_cache.dir
