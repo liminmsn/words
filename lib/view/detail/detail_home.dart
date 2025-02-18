@@ -163,7 +163,8 @@ class _DetailHomeState extends State<DetailHome> {
           children: [
             for (var i = 0; i < _imgs.length; i++)
               GestureDetector(
-                onTap: () => onTap(_imgs[i]),
+                // onTap: () => onTap(_imgs[i]),
+                onLongPress: () => onTap(_imgs[i]),
                 child: Image.network(_imgs[i].src),
               ),
           ],
