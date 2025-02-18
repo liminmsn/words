@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_file_dialog/flutter_file_dialog.dart';
+import 'package:http/http.dart' as http;
 import 'package:words/api/api_photo.dart';
 import 'package:words/api/api_proto_detail.dart';
 import 'package:words/components/y_loding.dart';
@@ -28,6 +30,34 @@ class _DetailHomeState extends State<DetailHome> {
         duration: Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
+    }
+
+    Future<void> saveImage(String url) async {
+      final response = await http.get(Uri.parse(url));
+      final bytes = response.bodyBytes;
+
+      final filePath = await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+            sourceFilePath: null, fileName: 'image.jpg', data: bytes),
+      );
+
+      if (filePath != null) {
+        // Saved successfully
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Awesome Snackbar!'),
+            action: SnackBarAction(
+              label: 'Action',
+              onPressed: () {
+                // Code to execute.
+              },
+            ),
+          ),
+        );
+      } else {
+        // Save operation cancelled
+        print('Save operation cancelled');
+      }
     }
 
     void onTap(YImgDetail y) {
@@ -65,8 +95,9 @@ class _DetailHomeState extends State<DetailHome> {
                       ),
                       SizedBox(width: 10),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // 按钮点击事件
+                          await saveImage(y.src);
                         },
                         child: Row(
                           children: [Text('Save'), Icon(Icons.download)],
