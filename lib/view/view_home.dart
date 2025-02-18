@@ -80,7 +80,7 @@ class _YCardState extends State<YCard> {
             image: widget.yImg.data,
           ),
           Positioned(
-            child: const Stack(
+            child: Stack(
               children: [
                 Positioned(
                   right: 0,
@@ -88,7 +88,7 @@ class _YCardState extends State<YCard> {
                   child: Icon(
                     Icons.bookmark,
                     size: 30,
-                    color: Colors.red,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:words/view/view_home.dart';
 import 'package:words/view/view_info.dart';
 import 'package:words/view/view_tags.dart';
@@ -21,22 +20,22 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarIconBrightness: Brightness.dark, // 设置状态栏图标的颜色（浅色）
-    ));
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    //   statusBarIconBrightness: Brightness.light, // 设置状态栏图标的颜色（浅色）
+    // ));
 
     return MaterialApp(
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSwatch(
-          primarySwatch: Colors.red,
+        fontFamily: 'Roboto',
+        appBarTheme: AppBarTheme(
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
         ),
       ),
-      darkTheme: ThemeData.dark().copyWith(),
+      darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Welfare Rabbit"),
-        ),
+        appBar: AppBar(title: Text("Welfare Rabbit")),
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
