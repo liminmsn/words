@@ -54,7 +54,7 @@ class _DetailHomeState extends State<DetailHome> {
       builder: (BuildContext context) {
         return Dialog(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(6.0), // 设置为0.0以去掉圆角
+            borderRadius: BorderRadius.circular(0), // 设置为0.0以去掉圆角
           ),
           child: Container(
             padding: EdgeInsets.all(16.0),
