@@ -1,13 +1,48 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
+import 'package:words/net/request.dart';
 
 import '../../components/y_loding.dart';
 import 'detail_home.dart';
 
-class DetailList extends StatelessWidget {
-  final Future<List<YImg>> Function() fetchData;
-  const DetailList({super.key, required this.fetchData});
+class DetailList extends StatefulWidget {
+  final String? url;
+  const DetailList({super.key, this.url});
+
+  @override
+  State<DetailList> createState() => _DetailListState();
+}
+
+class _DetailListState extends State<DetailList> {
+  late String url;
+  late bool shownav = false;
+
+  ScrollController controller = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    url = widget.url ?? YRequest.url;
+    controller.addListener(listener);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.removeListener(listener);
+    controller.dispose();
+  }
+
+  void listener() {
+    if (controller.position.pixels == controller.position.maxScrollExtent) {
+      // setState(() => shownav = true);
+    } else if (controller.position.pixels ==
+        controller.position.minScrollExtent) {
+      // setState(() => shownav = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,25 +50,71 @@ class DetailList extends StatelessWidget {
       child: Yloding.buildr(
         future: fetchData,
         builder: (context, snapshot) {
-          return GridView.builder(
-            padding: const EdgeInsets.all(5),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 5,
-              childAspectRatio: 2 / 3,
-              crossAxisCount: 3,
-            ),
-            itemCount: snapshot.data?.length,
-            itemBuilder: (context, index) {
-              return YCard(
-                yImg: snapshot.data![index],
-                idx: index + 1,
-              );
-            },
+          return Column(
+            children: [
+              Flex(
+                direction: Axis.horizontal,
+                children: [
+                  for (var item in snapshot.data!.pageNavigator)
+                    Expanded(
+                      flex: 1,
+                      child: InkWell(
+                        onTap: () {
+                          if (item.current) return;
+                          setState(() {
+                            url = item.href;
+                          });
+                        },
+                        child: Container(
+                          padding: EdgeInsets.only(top: 5, bottom: 5),
+                          color: item.current
+                              ? Theme.of(context).colorScheme.primary
+                              : Theme.of(context).colorScheme.primaryContainer,
+                          child: Text(
+                            item.label,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: item.current
+                                    ? Theme.of(context).colorScheme.onPrimary
+                                    : Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+              Expanded(
+                child: GridView.builder(
+                  controller: controller,
+                  // padding: const EdgeInsets.all(5),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisSpacing: 2,
+                    mainAxisSpacing: 2,
+                    childAspectRatio: 2 / 3,
+                    crossAxisCount: 3,
+                  ),
+                  itemCount: snapshot.data?.imgs.length,
+                  itemBuilder: (context, index) {
+                    return YCard(
+                      yImg: snapshot.data!.imgs[index],
+                      idx: index + 1,
+                    );
+                  },
+                ),
+              ),
+            ],
           );
         },
       ),
     );
+  }
+
+  Future<ApiPhoto> fetchData() async {
+    var body = await YRequest(url_: url).get();
+    return ApiPhoto(body);
   }
 }
 
@@ -63,6 +144,15 @@ class _YCardState extends State<YCard> {
           FadeInImage.memoryNetwork(
             placeholder: kTransparentImage,
             image: widget.yImg.data,
+            imageErrorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Icon(
+                  Icons.not_interested_rounded,
+                  size: 50,
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              );
+            },
           ),
           Positioned(
             child: Stack(
@@ -84,7 +174,7 @@ class _YCardState extends State<YCard> {
             left: 0,
             right: 0,
             child: Container(
-                color: Theme.of(context).colorScheme.secondary.withAlpha(100),
+                color: Theme.of(context).colorScheme.secondary.withAlpha(200),
                 padding: const EdgeInsets.all(5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,

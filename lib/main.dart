@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
             NavButton(
               icon: Icons.info_outline,
               selectIcon: Icons.info,
-              label: "Category",
+              label: "Info",
             ),
           ],
         ),

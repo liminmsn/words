@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:http/http.dart' as http;
+import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/api/api_proto_detail.dart';
 import 'package:words/net/request.dart';
@@ -165,7 +166,19 @@ class _DetailHomeState extends State<DetailHome> {
               GestureDetector(
                 // onTap: () => onTap(_imgs[i]),
                 onLongPress: () => onTap(_imgs[i]),
-                child: Image.network(_imgs[i].src),
+                child: FadeInImage.memoryNetwork(
+                  placeholder: kTransparentImage,
+                  image: _imgs[i].src,
+                  imageErrorBuilder: (context, error, stackTrace) {
+                    return Center(
+                      child: Icon(
+                        Icons.not_interested_rounded,
+                        size: 50,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    );
+                  },
+                ),
               ),
           ],
         ),

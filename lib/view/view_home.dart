@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:words/api/api_photo.dart';
-import 'package:words/net/request.dart';
 import 'package:words/view/detail/detail_list.dart';
 
 class ViewHome extends StatefulWidget {
@@ -14,13 +12,10 @@ class _ViewHomeState extends State<ViewHome> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
-        children: [DetailList(fetchData: fetchData)],
+        children: [
+          DetailList(),
+        ],
       ),
     );
-  }
-
-  Future<List<YImg>> fetchData() async {
-    var body = await YRequest().get();
-    return ApiPhoto(body).imgs;
   }
 }
