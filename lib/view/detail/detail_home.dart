@@ -29,16 +29,21 @@ class _DetailHomeState extends State<DetailHome> {
     final response = await http.get(Uri.parse(y.src));
     final bytes = response.bodyBytes;
 
-    final filePath = await FlutterFileDialog.saveFile(
-      params: SaveFileDialogParams(
-          sourceFilePath: null, fileName: '${y.title}.jpg', data: bytes),
-    );
+    // ignore: use_build_context_synchronously
+    if (Theme.of(context).platform == TargetPlatform.android ||
+        // ignore: use_build_context_synchronously
+        Theme.of(context).platform == TargetPlatform.iOS) {
+      final filePath = await FlutterFileDialog.saveFile(
+        params: SaveFileDialogParams(
+            sourceFilePath: null, fileName: '${y.title}.jpg', data: bytes),
+      );
 
-    if (filePath != null) {
-      // Saved successfully
-    } else {
-      // Save operation cancelled
-      // print('Save operation cancelled');
+      if (filePath != null) {
+        // Saved successfully
+      } else {
+        // Save operation cancelled
+        // print('Save operation cancelled');
+      }
     }
   }
 
