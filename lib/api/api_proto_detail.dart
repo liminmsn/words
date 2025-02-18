@@ -1,6 +1,6 @@
 import 'package:html/dom.dart';
 
-class YImgDetail {
+interface class YImgDetail {
   late String src;
   late String title;
 }
