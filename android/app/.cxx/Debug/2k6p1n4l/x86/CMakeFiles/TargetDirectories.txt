@@ -1,0 +1,2 @@
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/Debug/2k6p1n4l/x86/CMakeFiles/edit_cache.dir
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/Debug/2k6p1n4l/x86/CMakeFiles/rebuild_cache.dir
