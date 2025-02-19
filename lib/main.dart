@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:words/view/view_home.dart';
 import 'package:words/view/view_info.dart';
 import 'package:words/view/view_tags.dart';
@@ -26,7 +27,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       theme: ThemeData(
-        fontFamily: 'Roboto',
+        fontFamily: GoogleFonts.dynaPuff().fontFamily,
         appBarTheme: AppBarTheme(
           backgroundColor: Theme.of(context).colorScheme.primary,
           foregroundColor: Colors.white,
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
-        appBar: AppBar(title: Text("Welfare Rabbit")),
+        appBar: AppBar(title: Text("Soft girl photo")),
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,

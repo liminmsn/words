@@ -8,6 +8,7 @@ import 'package:words/net/request.dart';
 
 class DetailHome extends StatefulWidget {
   final YImg item;
+
   const DetailHome({super.key, required this.item});
 
   @override
@@ -65,28 +66,36 @@ class _DetailHomeState extends State<DetailHome> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0), // 设置为0.0以去掉圆角
-          ),
-          child: Container(
-            padding: EdgeInsets.all(16.0),
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: SizedBox(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                SizedBox(height: 10.0),
                 Text(
                   y.title,
                   style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
                   ),
                 ),
                 SizedBox(height: 10.0),
-                Image.network(y.src),
+                Container(
+                  margin: EdgeInsets.only(left: 10, right: 10),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 10,
+                      // style: BorderStyle.solid
+                    )
+                  ),
+                  child: Image.network(y.src),
+                ),
                 SizedBox(height: 10.0),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () => Navigator.of(context).pop(),
@@ -104,12 +113,22 @@ class _DetailHomeState extends State<DetailHome> {
                         children: [Text('Save'), Icon(Icons.download)],
                       ),
                     ),
+                    SizedBox(width: 10),
                   ],
                 )
               ],
             ),
           ),
         );
+        // return Dialog(
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: BorderRadius.circular(0), // 设置为0.0以去掉圆角
+        //   ),
+        //   child: Container(
+        //     padding: EdgeInsets.all(16.0),
+        //     child:
+        //   ),
+        // );
       },
     );
   }
@@ -120,6 +139,7 @@ class _DetailHomeState extends State<DetailHome> {
   }
 
   final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
@@ -164,8 +184,8 @@ class _DetailHomeState extends State<DetailHome> {
           children: [
             for (var i = 0; i < _imgs.length; i++)
               GestureDetector(
-                // onTap: () => onTap(_imgs[i]),
-                onLongPress: () => onTap(_imgs[i]),
+                onTap: () => onTap(_imgs[i]),
+                // onLongPress: () => onTap(_imgs[i]),
                 child: FadeInImage.memoryNetwork(
                   placeholder: kTransparentImage,
                   image: _imgs[i].src,
