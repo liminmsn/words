@@ -1,0 +1,2 @@
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/RelWithDebInfo/365z423p/x86/CMakeFiles/edit_cache.dir
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/RelWithDebInfo/365z423p/x86/CMakeFiles/rebuild_cache.dir
