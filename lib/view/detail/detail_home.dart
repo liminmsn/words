@@ -41,8 +41,9 @@ class _DetailHomeState extends State<DetailHome> {
       );
 
       if (filePath != null) {
-        // Saved successfully
+        // ignore: use_build_context_synchronously
         Navigator.of(context).pop();
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: const Text('Storage successful!'),
@@ -85,12 +86,11 @@ class _DetailHomeState extends State<DetailHome> {
                 Container(
                   margin: EdgeInsets.only(left: 10, right: 10),
                   decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 10,
-                      // style: BorderStyle.solid
-                    )
-                  ),
+                      border: Border.all(
+                    color: Colors.white,
+                    width: 10,
+                    // style: BorderStyle.solid
+                  )),
                   child: Image.network(y.src),
                 ),
                 SizedBox(height: 10.0),
