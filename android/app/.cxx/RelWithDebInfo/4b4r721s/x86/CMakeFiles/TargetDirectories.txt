@@ -1,0 +1,2 @@
+C:/Users/limin/Desktop/words/android/app/.cxx/RelWithDebInfo/4b4r721s/x86/CMakeFiles/edit_cache.dir
+C:/Users/limin/Desktop/words/android/app/.cxx/RelWithDebInfo/4b4r721s/x86/CMakeFiles/rebuild_cache.dir

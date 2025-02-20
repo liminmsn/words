@@ -1,15 +1,13 @@
 package com.example.native_
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import java.security.MessageDigest
-
-abstract class NativeItem(var url: String) {
-    abstract fun call(call: MethodCall, result: MethodChannel.Result)
-}
+import com.example.interface_.NativeItem
 
 class Native(flutterEngine: FlutterEngine, context: Context) {
     private val arr: Array<NativeItem> = arrayOf(PlatformVersion(context));
@@ -27,6 +25,7 @@ class Native(flutterEngine: FlutterEngine, context: Context) {
 class PlatformVersion(private var context: Context) : NativeItem("com.example.words.native/uuid") {
 
 
+    @SuppressLint("HardwareIds")
     override fun call(call: MethodCall, result: MethodChannel.Result) {
         if (call.method == "uuid") {
             val androidId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID)
