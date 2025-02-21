@@ -27,10 +27,11 @@ class _ViewTagsState extends State<ViewTags> {
               children: [
                 Expanded(
                   child: TextField(
+                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                     decoration: InputDecoration(
                       labelText: 'Search',
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.search),
+                      // prefixIcon: Icon(Icons.search),
                     ),
                     keyboardType: TextInputType.text,
                     onChanged: (value) {

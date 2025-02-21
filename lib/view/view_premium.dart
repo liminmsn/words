@@ -128,8 +128,8 @@ class YCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "点击二维码微信获取赏码\n赞赏获取激活码",
-                    style: TextStyle(fontSize: 8, color: Colors.white),
+                    "点击二维码微信赏码\n赞获取激活码",
+                    style: TextStyle(fontSize: 8, color: labelColor),
                   ),
                   IconButton(
                     onPressed: () {},

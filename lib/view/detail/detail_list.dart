@@ -52,7 +52,7 @@ class _DetailListState extends State<DetailList> {
                       flex: 1,
                       child: InkWell(
                         onTap: () {
-                          if (item.current) return;
+                          if (item.current || item.label == "...") return;
                           setState(() {
                             url = item.href;
                           });
@@ -66,7 +66,7 @@ class _DetailListState extends State<DetailList> {
                             item.label,
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 10,
+                                // fontSize: 14,
                                 color: item.current
                                     ? Theme.of(context).colorScheme.onPrimary
                                     : Theme.of(context)
@@ -82,8 +82,8 @@ class _DetailListState extends State<DetailList> {
                 child: GridView.builder(
                   // padding: const EdgeInsets.all(5),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisSpacing: 2,
-                    mainAxisSpacing: 2,
+                    crossAxisSpacing: 1,
+                    mainAxisSpacing: 1,
                     childAspectRatio: 2 / 3,
                     crossAxisCount: 2,
                   ),
@@ -172,40 +172,43 @@ class YCard extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-                color: Theme.of(context).colorScheme.secondary.withAlpha(50),
-                padding: const EdgeInsets.all(5),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Text(
-                      yImg.alt,
-                      // textAlign: TextAlign.end,
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
+              color: Theme.of(context).colorScheme.onPrimary.withAlpha(60),
+              padding: const EdgeInsets.all(5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    yImg.alt,
+                    // textAlign: TextAlign.end,
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onPrimaryContainer,
                     ),
-                    SizedBox(height: 4),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.collections,
-                          size: 12,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          yImg.detail,
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 8),
-                        ),
-                      ],
-                    )
-                  ],
-                )),
+                  ),
+                  SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.collections,
+                        size: 12,
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        yImg.detail,
+                        style: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onPrimaryContainer,
+                            fontSize: 8),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
           ),
         ],
       ),
