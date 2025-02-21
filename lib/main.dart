@@ -31,6 +31,28 @@ class _MyAppState extends State<MyApp> {
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     //   statusBarIconBrightness: Brightness.light, // 设置状态栏图标的颜色（浅色）
     // ));
+    List<NavButton> navButtons = [
+      NavButton(
+        icon: Icons.image_outlined,
+        selectIcon: Icons.image,
+        label: "Photo",
+      ),
+      NavButton(
+        icon: Icons.category_outlined,
+        selectIcon: Icons.category,
+        label: "Category",
+      ),
+      NavButton(
+        icon: Icons.bookmark_border_sharp,
+        selectIcon: Icons.bookmark_sharp,
+        label: "bookmark",
+      ),
+      NavButton(
+        icon: Icons.loyalty_outlined,
+        selectIcon: Icons.loyalty_rounded,
+        label: "Premium",
+      ),
+    ];
 
     return MaterialApp(
       theme: ThemeData(
@@ -43,35 +65,14 @@ class _MyAppState extends State<MyApp> {
       darkTheme: ThemeData.dark(),
       themeMode: ThemeMode.system, // 根据系统设置亮色或暗色主题
       home: Scaffold(
-        appBar: AppBar(title: Text("Soft girl photo")),
+        appBar: AppBar(title: Text(navButtons[_selectedIndex].label)),
         body: _views[_selectedIndex],
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
           onDestinationSelected: (value) => setState(() {
             _selectedIndex = value;
           }),
-          destinations: [
-            NavButton(
-              icon: Icons.image_outlined,
-              selectIcon: Icons.image,
-              label: "Photo",
-            ),
-            NavButton(
-              icon: Icons.category_outlined,
-              selectIcon: Icons.category,
-              label: "Category",
-            ),
-            NavButton(
-              icon: Icons.bookmark_border_sharp,
-              selectIcon: Icons.bookmark_sharp,
-              label: "bookmark",
-            ),
-            NavButton(
-              icon: Icons.loyalty_outlined,
-              selectIcon: Icons.loyalty_rounded,
-              label: "Premium",
-            ),
-          ],
+          destinations: navButtons,
         ),
       ),
     );
