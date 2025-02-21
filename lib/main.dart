@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:words/view/view_bookmark.dart';
 import 'package:words/view/view_home.dart';
 import 'package:words/view/view_info.dart';
+import 'package:words/view/view_premium.dart';
 import 'package:words/view/view_tags.dart';
 
 void main() {
@@ -16,7 +18,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<Widget> _views = [ViewHome(), ViewTags(), ViewInfo(), ViewInfo()];
+  final List<Widget> _views = [
+    ViewHome(),
+    ViewTags(),
+    ViewBookmark(),
+    ViewPremium()
+  ];
   late int _selectedIndex = 0;
 
   @override

@@ -5,6 +5,7 @@ import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/api/api_proto_detail.dart';
 import 'package:words/net/request.dart';
+import 'package:words/script/bookmark.dart';
 
 class DetailHome extends StatefulWidget {
   final YImg item;
@@ -17,6 +18,7 @@ class DetailHome extends StatefulWidget {
 
 class _DetailHomeState extends State<DetailHome> {
   List<YImgDetail> _imgs = [];
+  late bool makeBookmark = false;
   late double height = MediaQuery.of(context).size.height * 0.8;
   late bool _showTop = false;
 
@@ -120,26 +122,19 @@ class _DetailHomeState extends State<DetailHome> {
             ),
           ),
         );
-        // return Dialog(
-        //   shape: RoundedRectangleBorder(
-        //     borderRadius: BorderRadius.circular(0), // 设置为0.0以去掉圆角
-        //   ),
-        //   child: Container(
-        //     padding: EdgeInsets.all(16.0),
-        //     child:
-        //   ),
-        // );
       },
     );
   }
 
+  //加载数据
   getData() async {
+    var isExist = await Bookmark.isExist(widget.item);
+    setState(() => makeBookmark = isExist);
     var data = await fetchData();
     setState(() => _imgs = data);
   }
 
   final ScrollController _scrollController = ScrollController();
-
   @override
   void initState() {
     super.initState();
@@ -177,6 +172,23 @@ class _DetailHomeState extends State<DetailHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.item.alt),
+        actions: <Widget>[
+          IconButton(
+            icon: makeBookmark
+                ? Icon(Icons.bookmark, size: 30, color: Colors.red)
+                : Icon(Icons.bookmark_border, size: 30),
+            onPressed: () async {
+              if (makeBookmark) {
+                await Bookmark.del(widget.item);
+              } else {
+                await Bookmark.add(widget.item);
+              }
+              setState(() {
+                makeBookmark = !makeBookmark;
+              });
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         controller: _scrollController,

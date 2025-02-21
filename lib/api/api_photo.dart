@@ -6,11 +6,34 @@ interface class YPageNavigator {
   late bool current;
 }
 
-interface class YImg {
+class YImg {
   late String alt;
   late String data;
   late String detail;
   late String url;
+
+  YImg(
+      {required this.url,
+      required this.alt,
+      required this.data,
+      required this.detail});
+
+  factory YImg.fromJson(Map<String, dynamic> json) {
+    return YImg(
+      url: json['url'],
+      alt: json['alt'],
+      data: json['data'],
+      detail: json['detail'],
+    );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'url': url,
+      'alt': alt,
+      'data': data,
+      'detail': detail,
+    };
+  }
 }
 
 class ApiPhoto {
@@ -25,7 +48,7 @@ class ApiPhoto {
       var img_ = element.getElementsByTagName("img")[0];
       var span_ = element.getElementsByClassName("item-num")[0];
       var a_ = element.getElementsByClassName("item-link")[0];
-      var img = YImg();
+      var img = YImg(url: "", alt: "", data: "", detail: "");
       img.alt = (img_.attributes['alt'] ?? "null").replaceAll(' ', '');
       img.data = 'https:${img_.attributes["data-original"]}';
       img.detail = span_.nodes[0]

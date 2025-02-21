@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/net/request.dart';
+import 'package:words/script/bookmark.dart';
 
 import '../../components/y_loding.dart';
 import 'detail_home.dart';
@@ -17,28 +18,21 @@ class DetailList extends StatefulWidget {
 class _DetailListState extends State<DetailList> {
   late String url;
   late bool shownav = false;
+  late List<YImg> locaimgs = [];
 
-  ScrollController controller = ScrollController();
   @override
   void initState() {
     super.initState();
     url = widget.url ?? YRequest.url;
-    controller.addListener(listener);
+    init();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    controller.removeListener(listener);
-    controller.dispose();
-  }
-
-  void listener() {
-    if (controller.position.pixels == controller.position.maxScrollExtent) {
-      // setState(() => shownav = true);
-    } else if (controller.position.pixels ==
-        controller.position.minScrollExtent) {
-      // setState(() => shownav = false);
+  init() async {
+    var res = await Bookmark.data();
+    if (res.isNotEmpty) {
+      setState(() {
+        locaimgs = res;
+      });
     }
   }
 
@@ -86,7 +80,6 @@ class _DetailListState extends State<DetailList> {
               ),
               Expanded(
                 child: GridView.builder(
-                  controller: controller,
                   // padding: const EdgeInsets.all(5),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisSpacing: 2,
@@ -99,6 +92,10 @@ class _DetailListState extends State<DetailList> {
                     return YCard(
                       yImg: snapshot.data!.imgs[index],
                       idx: index + 1,
+                      bookmark: locaimgs.any((element) =>
+                          element.url == snapshot.data!.imgs[index].url),
+                      // bookmark: Bookmark.isExist_(
+                      //     locaimgs, snapshot.data!.imgs[index]),
                     );
                   },
                 ),
@@ -116,16 +113,17 @@ class _DetailListState extends State<DetailList> {
   }
 }
 
-class YCard extends StatefulWidget {
+class YCard extends StatelessWidget {
   final YImg yImg;
   final int idx;
-  const YCard({super.key, required this.yImg, required this.idx});
+  final bool bookmark;
+  const YCard({
+    super.key,
+    required this.yImg,
+    required this.idx,
+    required this.bookmark,
+  });
 
-  @override
-  State<YCard> createState() => _YCardState();
-}
-
-class _YCardState extends State<YCard> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -133,7 +131,7 @@ class _YCardState extends State<YCard> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DetailHome(item: widget.yImg),
+            builder: (context) => DetailHome(item: yImg),
           ),
         );
       },
@@ -141,7 +139,7 @@ class _YCardState extends State<YCard> {
         children: [
           FadeInImage.memoryNetwork(
             placeholder: kTransparentImage,
-            image: widget.yImg.data,
+            image: yImg.data,
             imageErrorBuilder: (context, error, stackTrace) {
               return Center(
                 child: Icon(
@@ -155,15 +153,17 @@ class _YCardState extends State<YCard> {
           Positioned(
             child: Stack(
               children: [
-                Positioned(
-                  right: 0,
-                  top: -8,
-                  child: Icon(
-                    Icons.bookmark,
-                    size: 30,
-                    color: Colors.red,
-                  ),
-                ),
+                bookmark
+                    ? Positioned(
+                        right: 0,
+                        top: -8,
+                        child: Icon(
+                          Icons.bookmark,
+                          size: 30,
+                          color: Colors.red,
+                        ),
+                      )
+                    : Container(),
               ],
             ),
           ),
@@ -178,7 +178,7 @@ class _YCardState extends State<YCard> {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Text(
-                      widget.yImg.alt,
+                      yImg.alt,
                       // textAlign: TextAlign.end,
                       style: TextStyle(
                         fontSize: 12,
@@ -197,7 +197,7 @@ class _YCardState extends State<YCard> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          widget.yImg.detail,
+                          yImg.detail,
                           style: TextStyle(
                               color: Theme.of(context).colorScheme.onPrimary,
                               fontSize: 8),
