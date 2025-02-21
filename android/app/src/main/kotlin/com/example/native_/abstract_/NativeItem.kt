@@ -1,4 +1,4 @@
-package com.example.interface_
+package com.example.native_.abstract_
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
