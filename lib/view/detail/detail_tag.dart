@@ -17,11 +17,7 @@ class _DetailTagState extends State<DetailTag> {
       appBar: AppBar(
         title: Text(widget.item.title),
       ),
-      body: SafeArea(
-        child: DetailList(
-          url: widget.item.href,
-        ),
-      ),
+      body: DetailList(url: widget.item.href),
     );
   }
 }
