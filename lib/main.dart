@@ -16,7 +16,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final List<Widget> _views = [ViewHome(), ViewTags(), ViewInfo()];
+  final List<Widget> _views = [ViewHome(), ViewTags(), ViewInfo(), ViewInfo()];
   late int _selectedIndex = 0;
 
   @override
@@ -55,9 +55,14 @@ class _MyAppState extends State<MyApp> {
               label: "Category",
             ),
             NavButton(
-              icon: Icons.info_outline,
-              selectIcon: Icons.info,
-              label: "Info",
+              icon: Icons.bookmark_border_sharp,
+              selectIcon: Icons.bookmark_sharp,
+              label: "bookmark",
+            ),
+            NavButton(
+              icon: Icons.loyalty_outlined,
+              selectIcon: Icons.loyalty_rounded,
+              label: "Premium",
             ),
           ],
         ),
