@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:words/api/api_tags.dart';
 import 'package:words/components/y_loding.dart';
 import 'package:words/net/request.dart';
+import 'package:words/view/detail/detail_search.dart';
 import 'package:words/view/detail/detail_tag.dart';
 
 class ViewTags extends StatefulWidget {
@@ -12,17 +13,49 @@ class ViewTags extends StatefulWidget {
 }
 
 class _ViewTagsState extends State<ViewTags> {
+  late String iptValue = '';
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Padding(
+            padding: EdgeInsets.only(left: 20, right: 20, top: 20),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: 'Search',
+                      border: OutlineInputBorder(),
+                      prefixIcon: Icon(Icons.search),
+                    ),
+                    keyboardType: TextInputType.text,
+                    onChanged: (value) {
+                      iptValue = value;
+                    },
+                    onSubmitted: (query) {
+                      // 当按下回车键时触发
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DetailSearch(label: query),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: Yloding.buildr<List<YTag>>(
               future: fetchData,
               builder: (context, snapshot) {
                 return Padding(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.only(left: 20, right: 20, top: 10),
                   child: GridView.builder(
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // 每行显示2个项目

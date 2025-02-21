@@ -85,7 +85,7 @@ class _DetailListState extends State<DetailList> {
                     crossAxisSpacing: 2,
                     mainAxisSpacing: 2,
                     childAspectRatio: 2 / 3,
-                    crossAxisCount: 3,
+                    crossAxisCount: 2,
                   ),
                   itemCount: snapshot.data?.imgs.length,
                   itemBuilder: (context, index) {
@@ -172,7 +172,7 @@ class YCard extends StatelessWidget {
             left: 0,
             right: 0,
             child: Container(
-                color: Theme.of(context).colorScheme.secondary.withAlpha(200),
+                color: Theme.of(context).colorScheme.secondary.withAlpha(50),
                 padding: const EdgeInsets.all(5),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
