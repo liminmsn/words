@@ -10,13 +10,14 @@
 	const title = ref("hello world");
 	const data = ref();
 	async function getData() {
-		data.value = await fetch('https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/test',{
-			method:'get',
-			headers:{
-				'id':"19239421jfdslkjl213jfioj2jif"
-			}
+		data.value = await fetch('https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey', {
+			method: 'post',
+			headers: {
+				'id': "19239421jfdslkjl213jfioj2jif"
+			},
+			body: new FormData()
 		});
-		console.log(data.value);	
+		console.log(data.value);
 	}
 </script>
 
