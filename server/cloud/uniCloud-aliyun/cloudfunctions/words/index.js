@@ -3,11 +3,12 @@ exports.main = async (event, context) => {
 	//event为客户端上传的参数
 	console.log('event : ', event)
 
-	const res = class {
+	const Res = class {
 		code = 0;
 		data = {};
-		constructor(data) {
-			
+		constructor(data, code = 200) {
+			this.data = data;
+			this.code = code;
 		}
 	}
 
@@ -24,6 +25,10 @@ exports.main = async (event, context) => {
 						createTime: time,
 					});
 					return res;
+					break;
+				case '/get_all':
+					const list = db.collection('sys_keys').get();
+					return new Res(list);
 					break;
 			}
 			break;

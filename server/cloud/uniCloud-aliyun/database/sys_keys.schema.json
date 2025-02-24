@@ -14,6 +14,10 @@
 		"key": {
 			"bsonType": "string"
 		},
+		"keyType": {
+			"bsonType": "int",
+			"defaultValue": 0
+		},
 		"createTime": {
 			"arrayType": "string"
 		},
@@ -23,7 +27,7 @@
 		},
 		"usrid": {
 			"bsonType": "string",
-			"defaultValue": ""
+			"defaultValue": "null"
 		}
 	}
 }
