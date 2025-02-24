@@ -3,15 +3,6 @@ exports.main = async (event, context) => {
 	//event为客户端上传的参数
 	console.log('event : ', event)
 
-	const Res = class {
-		code = 0;
-		data = {};
-		constructor(data, code = 200) {
-			this.data = data;
-			this.code = code;
-		}
-	}
-
 	const db = uniCloud.database();
 	switch (event['httpMethod']) {
 		case 'GET':
@@ -20,15 +11,17 @@ exports.main = async (event, context) => {
 			switch (event['path']) {
 				case '/createkey':
 					const time = Date.now();
-					const res = await db.collection("sys_keys").add({
+					const data = {
+						keyType: event.queryStringParameters['keyType'],
 						key: btoa(time),
 						createTime: time,
-					});
-					return res;
+					};
+					const res = await db.collection("sys_keys").add(data);
+					return data;
 					break;
 				case '/get_all':
 					const list = db.collection('sys_keys').get();
-					return new Res(list);
+					return list;
 					break;
 			}
 			break;
