@@ -3871,21 +3871,35 @@ ${o3}
       async function createKey() {
         show_cre_btn.value = false;
         show_key.value = false;
-        const form = new FormData();
-        form.set("keyType", items[current_.value].value);
-        let data = await fetch("https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey", {
-          method: "post",
-          headers: {
-            "id": "1234"
+        const res = await uni.request({
+          method: "POST",
+          url: "https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey",
+          data: {
+            "keyType": items[current_.value].value
           },
-          body: form
-        });
-        data = await data.json();
-        show_key.value = true;
-        key.value = data["id"];
-        show_cre_btn.value = true;
+          header: {
+            "id": "1234"
+          }
+        }).then();
+        if (res.statusCode == 200) {
+          key.value = res.data["key"];
+          show_key.value = true;
+          show_cre_btn.value = true;
+        }
+        formatAppLog("log", "at pages/index/index.vue:123", res.data);
       }
-      const __returned__ = { udb, current, toggleCureent, formType, items, current_, show_cre, show_cre_btn, show_key, key, createKey };
+      function copyText() {
+        uni.setClipboardData({
+          data: key.value,
+          success: function() {
+            uni.showToast({
+              title: "复制成功",
+              icon: "none"
+            });
+          }
+        });
+      }
+      const __returned__ = { udb, current, toggleCureent, formType, items, current_, show_cre, show_cre_btn, show_key, key, createKey, copyText };
       Object.defineProperty(__returned__, "__isScriptSetup", { enumerable: false, value: true });
       return __returned__;
     }
@@ -4008,15 +4022,16 @@ ${o3}
                   style: { "margin-bottom": "2vw", "text-align": "right" }
                 }, [
                   vue.createElementVNode("label", {
-                    onClick: _cache[2] || (_cache[2] = ($event) => $setup.show_cre = false)
-                  }, "取消"),
+                    onClick: _cache[2] || (_cache[2] = ($event) => ($setup.show_cre = false, $setup.toggleCureent(0)))
+                  }, "关闭"),
                   vue.createElementVNode("label", { onClick: $setup.createKey }, "创建")
                 ])) : (vue.openBlock(), vue.createElementBlock("view", { key: 1 }, " 创建中... ")),
                 $setup.show_key ? (vue.openBlock(), vue.createElementBlock(
                   "view",
                   {
                     key: 2,
-                    style: { "margin-top": "5vw" }
+                    style: { "margin-top": "5vw" },
+                    onClick: $setup.copyText
                   },
                   vue.toDisplayString($setup.key),
                   1

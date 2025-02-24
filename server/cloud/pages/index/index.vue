@@ -105,19 +105,22 @@
 	async function createKey() {
 		show_cre_btn.value = false;
 		show_key.value = false;
-		const form = new FormData();
-		form.set('keyType', items[current_.value].value);
-		let data = await fetch('https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey', {
-			method: 'post',
-			headers: {
-				'id': "1234"
+		const res = await uni.request({
+			method:'POST',
+			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey',
+			data: {
+				'keyType': items[current_.value].value
 			},
-			body: form,
-		});
-		data = await data.json();
-		show_key.value = true;
-		key.value = data['key'];
-		show_cre_btn.value = true;
+			header: {
+				'id': "1234"
+			}
+		}).then();
+		if(res.statusCode == 200){
+			key.value = res.data['key'];
+			show_key.value = true;
+			show_cre_btn.value = true;
+		}
+		console.log(res.data);
 	}
 
 	function copyText() {
