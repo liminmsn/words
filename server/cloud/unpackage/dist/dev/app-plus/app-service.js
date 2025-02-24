@@ -81,7 +81,7 @@ if (uni.restoreGlobal) {
     {
       path: "pages/index/index",
       style: {
-        navigationBarTitleText: "萌妹壁纸后台管理"
+        navigationBarTitleText: "萌妹写真后台"
       }
     }
   ];
@@ -3835,6 +3835,11 @@ ${o3}
       const udb = vue.ref();
       const current = vue.ref(1);
       function toggleCureent(val) {
+        if (val == 0) {
+          udb.value["clear"]();
+          udb.value["loadData"]();
+          return;
+        }
         current.value += val;
         udb.value["clear"]();
       }
@@ -3850,16 +3855,16 @@ ${o3}
       }
       const items = [
         {
-          value: "0",
+          value: 0,
           name: "3天",
           checked: "true"
         },
         {
-          value: "1",
+          value: 1,
           name: "7天"
         },
         {
-          value: "2",
+          value: 2,
           name: "30天"
         }
       ];
@@ -3882,11 +3887,12 @@ ${o3}
           }
         }).then();
         if (res.statusCode == 200) {
+          toggleCureent(0);
           key.value = res.data["key"];
           show_key.value = true;
           show_cre_btn.value = true;
         }
-        formatAppLog("log", "at pages/index/index.vue:123", res.data);
+        formatAppLog("log", "at pages/index/index.vue:136", res.data);
       }
       function copyText() {
         uni.setClipboardData({
@@ -3909,7 +3915,7 @@ ${o3}
     return vue.openBlock(), vue.createElementBlock("view", { class: "content" }, [
       vue.createElementVNode("view", { class: "li li_hear" }, [
         vue.createElementVNode("view", { class: "li_item" }, "序号"),
-        vue.createElementVNode("view", { class: "li_item li_key" }, "密钥key"),
+        vue.createElementVNode("view", { class: "li_item li_key" }, "密钥key(点击复制)"),
         vue.createElementVNode("view", { class: "li_item" }, "密钥类型"),
         vue.createElementVNode("view", { class: "li_item" }, "激活状态")
       ]),
@@ -3917,6 +3923,7 @@ ${o3}
         ref: "udb",
         class: "body",
         collection: "sys_keys",
+        orderby: "createTime desc",
         "page-size": 10,
         "page-current": $setup.current
       }, {
@@ -3931,70 +3938,82 @@ ${o3}
               vue.toDisplayString(error.message),
               1
               /* TEXT */
-            )) : loading ? (vue.openBlock(), vue.createElementBlock("view", { key: 1 }, "正在加载...")) : (vue.openBlock(true), vue.createElementBlock(
-              vue.Fragment,
-              { key: 2 },
-              vue.renderList(data, (item, idx) => {
-                return vue.openBlock(), vue.createElementBlock("view", { class: "li" }, [
-                  vue.createElementVNode(
-                    "view",
-                    { class: "li_item" },
-                    vue.toDisplayString(idx + 1),
+            )) : loading ? (vue.openBlock(), vue.createElementBlock("view", { key: 1 }, "正在加载...")) : (vue.openBlock(), vue.createElementBlock("view", { key: 2 }, [
+              (vue.openBlock(true), vue.createElementBlock(
+                vue.Fragment,
+                null,
+                vue.renderList(data, (item, idx) => {
+                  return vue.openBlock(), vue.createElementBlock("view", { class: "li" }, [
+                    vue.createElementVNode(
+                      "view",
+                      { class: "li_item" },
+                      vue.toDisplayString(idx + 1),
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode("view", {
+                      class: "li_item li_key",
+                      onClick: () => item.active ? "" : $setup.copyText()
+                    }, vue.toDisplayString(item.key), 9, ["onClick"]),
+                    vue.createElementVNode(
+                      "view",
+                      { class: "li_item" },
+                      vue.toDisplayString($setup.formType(item.keyType * 1)),
+                      1
+                      /* TEXT */
+                    ),
+                    vue.createElementVNode("view", { class: "li_item" }, [
+                      vue.createElementVNode("checkbox", {
+                        style: { "transform": "scale(0.6)" },
+                        color: "#4cd964",
+                        checked: item.active
+                      }, null, 8, ["checked"])
+                    ])
+                  ]);
+                }),
+                256
+                /* UNKEYED_FRAGMENT */
+              )),
+              vue.createElementVNode("view", { class: "page" }, [
+                vue.createElementVNode("label", {
+                  onClick: _cache[0] || (_cache[0] = ($event) => $setup.current > 1 && $setup.toggleCureent(-1))
+                }, "<"),
+                vue.createElementVNode("label", null, [
+                  vue.createTextVNode(
+                    vue.toDisplayString(pagination["current"]) + " ",
                     1
                     /* TEXT */
                   ),
-                  vue.createElementVNode(
-                    "view",
-                    { class: "li_item li_key" },
-                    vue.toDisplayString(item.key),
+                  vue.createElementVNode("span", { style: { "font-size": "10pt" } }, "/"),
+                  vue.createTextVNode(
+                    " " + vue.toDisplayString(pagination["count"] + 1),
                     1
                     /* TEXT */
-                  ),
-                  vue.createElementVNode(
-                    "view",
-                    { class: "li_item" },
-                    vue.toDisplayString($setup.formType(item.keyType)),
-                    1
-                    /* TEXT */
-                  ),
-                  vue.createElementVNode("view", { class: "li_item" }, [
-                    vue.createElementVNode("checkbox", {
-                      style: { "transform": "scale(0.6)" },
-                      value: item.active
-                    }, null, 8, ["value"])
-                  ])
-                ]);
-              }),
-              256
-              /* UNKEYED_FRAGMENT */
-            ))
+                  )
+                ]),
+                vue.createElementVNode("label", {
+                  onClick: ($event) => $setup.current < pagination["count"] + 1 && $setup.toggleCureent(1)
+                }, ">", 8, ["onClick"])
+              ])
+            ]))
           ]),
-          vue.createElementVNode("view", { class: "page" }, [
-            vue.createElementVNode("label", {
-              onClick: _cache[0] || (_cache[0] = ($event) => $setup.current > 1 && $setup.toggleCureent(-1))
-            }, "<"),
-            vue.createElementVNode("label", null, [
-              vue.createTextVNode(
-                vue.toDisplayString(pagination["current"]) + " ",
-                1
-                /* TEXT */
-              ),
-              vue.createElementVNode("span", { style: { "font-size": "10pt" } }, "/"),
-              vue.createTextVNode(
-                " " + vue.toDisplayString(pagination["count"] + 1),
-                1
-                /* TEXT */
-              )
-            ]),
-            vue.createElementVNode("label", {
-              onClick: ($event) => $setup.current < pagination["count"] + 1 && $setup.toggleCureent(1)
-            }, ">", 8, ["onClick"])
-          ]),
-          vue.createElementVNode("view", { class: "createKey" }, [
+          vue.createElementVNode("view", {
+            class: "createKey",
+            style: { "display": "flex", "gap": "2vw" }
+          }, [
             vue.createElementVNode("view", {
-              class: "createKey_btn",
-              onClick: _cache[1] || (_cache[1] = ($event) => $setup.show_cre = true)
-            }, " 创建密钥 "),
+              class: "",
+              style: { "width": "100%", "display": "flex", "justify-content": "center", "gap": "2vw" }
+            }, [
+              vue.createElementVNode("view", {
+                class: "createKey_btn",
+                onClick: _cache[1] || (_cache[1] = ($event) => $setup.show_cre = true)
+              }, " 创建密钥 "),
+              vue.createElementVNode("view", {
+                class: "createKey_btn",
+                onClick: _cache[2] || (_cache[2] = ($event) => $setup.toggleCureent(0))
+              }, " 刷新 ")
+            ]),
             $setup.show_cre ? (vue.openBlock(), vue.createElementBlock("view", {
               key: 0,
               class: "createkey_body"
@@ -4022,7 +4041,7 @@ ${o3}
                   style: { "margin-bottom": "2vw", "text-align": "right" }
                 }, [
                   vue.createElementVNode("label", {
-                    onClick: _cache[2] || (_cache[2] = ($event) => ($setup.show_cre = false, $setup.toggleCureent(0)))
+                    onClick: _cache[3] || (_cache[3] = ($event) => $setup.show_cre = false)
                   }, "关闭"),
                   vue.createElementVNode("label", { onClick: $setup.createKey }, "创建")
                 ])) : (vue.openBlock(), vue.createElementBlock("view", { key: 1 }, " 创建中... ")),

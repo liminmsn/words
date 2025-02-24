@@ -1,6 +1,6 @@
 {
 	"bsonType": "object",
-	"required": ["key", "createTime"],
+	"required": ["key", "keyType", "createTime", "active"],
 	"permission": {
 		"read": true,
 		"create": true,

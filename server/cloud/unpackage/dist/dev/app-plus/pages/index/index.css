@@ -25,15 +25,17 @@
 /* 文章场景相关 */
 .content .li_hear {
   text-align: left !important;
-  background-color: rebeccapurple;
+  background-color: #4cd964;
   color: white;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.5);
 }
 .content .li {
   flex: 1;
   font-size: 10pt;
   display: grid;
   grid-template-columns: 10vw 50vw 20vw 20vw;
+}
+.content .li:nth-child(even) {
+  background-color: #f1f1f1;
 }
 .content .li .li_item {
   padding: 2pt;
@@ -61,6 +63,7 @@
 .content .createKey .createKey_btn {
   width: 20%;
   border: 0.1px solid #c8c7cc;
+  background-color: #f1f1f1;
 }
 .content .createKey .createkey_body {
   position: absolute;

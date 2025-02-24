@@ -12,7 +12,7 @@ exports.main = async (event, context) => {
 				case '/createkey':
 					const time = Date.now();
 					const data = {
-						keyType: event.queryStringParameters['keyType'],
+						keyType: JSON.parse(event.body)['keyType'],
 						key: btoa(time),
 						createTime: time,
 					};

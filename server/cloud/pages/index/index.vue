@@ -2,39 +2,46 @@
 	<view class="content">
 		<view class="li li_hear">
 			<view class="li_item">序号</view>
-			<view class="li_item li_key">密钥key</view>
+			<view class="li_item li_key">密钥key(点击复制)</view>
 			<view class="li_item">密钥类型</view>
 			<view class="li_item">激活状态</view>
 		</view>
-		<unicloud-db ref="udb" class="body" collection="sys_keys" :page-size="10" :page-current="current"
+		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10" :page-current="current"
 			v-slot:default="{data, loading, error, pagination}">
 			<scroll-view scroll-y class="scview">
 				<view v-if="error">{{error.message}}</view>
 				<view v-else-if="loading">正在加载...</view>
-				<view v-for="(item,idx) in data" class="li" v-else>
-					<view class="li_item">
-						{{idx+1}}
+				<view v-else>
+					<view v-for="(item,idx) in data" class="li">
+						<view class="li_item">
+							{{idx+1}}
+						</view>
+						<view class="li_item li_key" @click="()=>item.active ? '':copyText()">
+							{{item.key}}
+						</view>
+						<view class="li_item">
+							{{formType(item.keyType * 1)}}
+						</view>
+						<view class="li_item">
+							<checkbox style="transform: scale(0.6);" color="#4cd964" :checked="item.active" />
+						</view>
 					</view>
-					<view class="li_item li_key">
-						{{item.key}}
-					</view>
-					<view class="li_item">
-						{{formType(item.keyType)}}
-					</view>
-					<view class="li_item">
-						<checkbox style="transform: scale(0.6);" :value="item.active" />
+					<view class="page">
+						<label @click="current > 1 && toggleCureent(-1)">&lt;</label>
+						<label>{{pagination['current']}} <span style="font-size: 10pt;">/</span>
+							{{pagination['count']+1}}</label>
+						<label @click="current < pagination['count']+1 && toggleCureent(+1)">&gt;</label>
 					</view>
 				</view>
 			</scroll-view>
-			<view class="page">
-				<label @click="current > 1 && toggleCureent(-1)">&lt;</label>
-				<label>{{pagination['current']}} <span style="font-size: 10pt;">/</span>
-					{{pagination['count']+1}}</label>
-				<label @click="current < pagination['count']+1 && toggleCureent(+1)">&gt;</label>
-			</view>
-			<view class="createKey">
-				<view class="createKey_btn" @click="show_cre = true">
-					创建密钥
+			<view class="createKey" style="display: flex;gap: 2vw;">
+				<view class="" style="width: 100%;display: flex;justify-content: center;gap: 2vw;">
+					<view class="createKey_btn" @click="show_cre = true">
+						创建密钥
+					</view>
+					<view class="createKey_btn" @click="toggleCureent(0)">
+						刷新
+					</view>
 				</view>
 				<view class="createkey_body" v-if="show_cre">
 					<view class="createkey_body_content">
@@ -48,7 +55,7 @@
 						</radio-group>
 						<view v-if="show_cre_btn" class="createkey_body_content_btns"
 							style="margin-bottom: 2vw;text-align: right;">
-							<label @click="show_cre = false,toggleCureent(0)">关闭</label>
+							<label @click="show_cre = false">关闭</label>
 							<label @click="createKey">创建</label>
 						</view>
 						<view v-else>
@@ -70,6 +77,11 @@
 	const current = ref(1);
 	//切换分页
 	function toggleCureent(val : 0 | 1 | -1) {
+		if (val == 0) {
+			udb.value['clear']();
+			udb.value['loadData']();
+			return;
+		}
 		current.value += val;
 		udb.value['clear']();
 	}
@@ -84,16 +96,16 @@
 	//创建key
 	const items = [
 		{
-			value: '0',
+			value: 0,
 			name: '3天',
 			checked: 'true'
 		},
 		{
-			value: '1',
+			value: 1,
 			name: '7天',
 		},
 		{
-			value: '2',
+			value: 2,
 			name: '30天',
 		},
 	];
@@ -106,7 +118,7 @@
 		show_cre_btn.value = false;
 		show_key.value = false;
 		const res = await uni.request({
-			method:'POST',
+			method: 'POST',
 			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey',
 			data: {
 				'keyType': items[current_.value].value
@@ -115,7 +127,8 @@
 				'id': "1234"
 			}
 		}).then();
-		if(res.statusCode == 200){
+		if (res.statusCode == 200) {
+			toggleCureent(0);
 			key.value = res.data['key'];
 			show_key.value = true;
 			show_cre_btn.value = true;
@@ -144,9 +157,9 @@
 			// top: 0;
 			// z-index: 2;
 			text-align: left !important;
-			background-color: rebeccapurple;
+			background-color: $uni-color-success;
 			color: white;
-			box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.5);
+			// box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.5);
 		}
 
 		.li {
@@ -154,6 +167,10 @@
 			font-size: 10pt;
 			display: grid;
 			grid-template-columns: 10vw 50vw 20vw 20vw;
+
+			&:nth-child(even) {
+				background-color: $uni-bg-color-hover;
+			}
 
 			.li_key {}
 
@@ -190,6 +207,7 @@
 			.createKey_btn {
 				width: 20%;
 				border: 0.1px solid $uni-border-color;
+				background-color: $uni-bg-color-hover;
 			}
 
 			.createkey_body {
