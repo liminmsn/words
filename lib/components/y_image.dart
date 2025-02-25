@@ -23,14 +23,19 @@ class YImage extends StatelessWidget {
             );
           },
         ),
-        sy ?
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          top: 0,
-          child: Icon(Icons.yard,color: Colors.white70,size: 100,),
-        ):Container(),
+        sy
+            ? Positioned(
+                left: 80,
+                right: 0,
+                bottom: 0,
+                top: 40,
+                child: Icon(
+                  Icons.sell,
+                  color: Colors.white,
+                  size: 200,
+                ),
+              )
+            : Container(),
       ],
     );
   }

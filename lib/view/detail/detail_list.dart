@@ -6,7 +6,7 @@ import 'package:words/net/request.dart';
 import 'package:words/script/bookmark.dart';
 
 import '../../components/y_loding.dart';
-import 'detail_home.dart';
+import 'detail_main_list.dart';
 
 class DetailList extends StatefulWidget {
   final String? url;

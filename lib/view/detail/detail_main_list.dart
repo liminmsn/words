@@ -192,6 +192,7 @@ class _DetailHomeState extends State<DetailHome> {
         ],
       ),
       body: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _scrollController,
         child: Column(
           children: [
