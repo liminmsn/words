@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
+import 'package:words/components/y_image.dart';
 import 'package:words/net/request.dart';
 import 'package:words/script/bookmark.dart';
 
@@ -137,19 +138,7 @@ class YCard extends StatelessWidget {
       },
       child: Stack(
         children: [
-          FadeInImage.memoryNetwork(
-            placeholder: kTransparentImage,
-            image: yImg.data,
-            imageErrorBuilder: (context, error, stackTrace) {
-              return Center(
-                child: Icon(
-                  Icons.not_interested_rounded,
-                  size: 50,
-                  color: Theme.of(context).colorScheme.error,
-                ),
-              );
-            },
-          ),
+          YImage(url: yImg.data, sy: false),
           Positioned(
             child: Stack(
               children: [
