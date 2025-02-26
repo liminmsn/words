@@ -10,6 +10,14 @@ exports.main = async (event, context) => {
 				case '/price':
 					const res = await db.collection('usr_premium').get();
 					return res["data"];
+				case '/isactive':
+					const res_0 = await db.collection('usr_keys').limit(1).where({
+						deviceId: event.headers['deviceid']
+					}).get();
+					if (res_0['data'][0]) {
+						return res_0['data'][0];
+					}
+					return null;
 				case '/active':
 					//查询激活码是否有效
 					const res_1 = await db.collection('sys_keys').limit(1).where({

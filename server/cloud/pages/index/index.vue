@@ -79,7 +79,7 @@
 	async function active() {
 		const res = await uni.request({
 			method: 'GET',
-			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/active',
+			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/isactive',
 			data: {
 				"key": ipt_val.value
 			},
@@ -87,6 +87,7 @@
 				'deviceId': "1234"
 			}
 		}).then();
+		console.log(res);
 	}
 
 	const udb = ref();
