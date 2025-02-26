@@ -104,9 +104,9 @@
 	//格式化订阅类型
 	function formType(val : number) {
 		switch (val) {
-			case 0: return '3day';
-			case 1: return '7day';
-			case 2: return '30day';
+			case 0: return '1天';
+			case 1: return '3天';
+			case 2: return '7天';
 		}
 	}
 	//创建key

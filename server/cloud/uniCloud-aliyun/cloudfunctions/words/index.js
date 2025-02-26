@@ -18,14 +18,31 @@ exports.main = async (event, context) => {
 					}).get();
 					//创建激活码
 					if (res_1['affectedDocs'] == 1) {
-						const res_2 = await db.collection('usr_keys').add({
-							"deviceId": event.headers['deviceid'],
-							"key": event.queryStringParameters['key'],
-							"keyType": res_1['data'][0]['keyType'],
-							"activeTime": Date.now()
-						});
-						if (res_2['id'] != null) {
-							//设置当前码已经激活
+						//查询当前设备是否已经有订阅记录
+						let res_2 = await db.collection('usr_keys').limit(1).where({
+							deviceId: event.headers['deviceid']
+						}).get();
+						//如果已经有记录了 更新
+						if (res_2['affectedDocs'] == 1) {
+							// 订阅记录
+							const _id = res_2['data'][0]['_id'];
+							res_2 = await db.collection('usr_keys').doc(_id).set({
+								"deviceId": event.headers['deviceid'],
+								"key": event.queryStringParameters['key'],
+								"keyType": res_1['data'][0]['keyType'],
+								"activeTime": Date.now()
+							});
+							//添加订阅数据
+						} else {
+							res_2 = await db.collection('usr_keys').add({
+								"deviceId": event.headers['deviceid'],
+								"key": event.queryStringParameters['key'],
+								"keyType": res_1['data'][0]['keyType'],
+								"activeTime": Date.now()
+							});
+						}
+						//设置当前码已激活
+						if (res_2['id'] != null || res_2['affectedDocs'] == 1) {
 							const res_3 = await db.collection('sys_keys').doc(res_1['data'][0]['_id']).update({
 								active: true
 							});
