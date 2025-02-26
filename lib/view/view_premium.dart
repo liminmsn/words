@@ -12,28 +12,32 @@ class ViewPremium extends StatefulWidget {
 
 class _ViewPremiumState extends State<ViewPremium> {
   late bool show = false;
-  late List<Price> prices;
-  late String activeIpt = "";
+  late List<Price> prices = [];
+  late String activeIpt = "1";
 
   Future<List<Price>> fetchData() async {
-    // var res = await YRequest.getPrice();
-    // if (res != null) {
-    //   return res;
-    // } else {
-    //   return [];
-    // }
-    return [];
+    activeIpt = await NativeMain.uuid;
+    setState(() {
+      activeIpt = activeIpt;
+    });
+    var res = await YRequest.getPrice();
+    if (res != null) {
+      setState(() {
+        prices = res;
+      });
+      return res;
+    } else {
+      return [];
+    }
   }
+
   //激活
-  void activeCode(){
-
-  }
-
-
+  void activeCode() {}
 
   @override
   void initState() {
     super.initState();
+    fetchData();
   }
 
   @override
@@ -42,6 +46,60 @@ class _ViewPremiumState extends State<ViewPremium> {
       child: SingleChildScrollView(
         child: Column(
           children: [
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Card(
+                clipBehavior: Clip.antiAlias,
+                child: Container(
+                  height: 200,
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.all(10),
+                  color: Theme.of(context).colorScheme.primary,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Premium Time",
+                        style: TextStyle(
+                            // fontSize: 20,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer),
+                      ),
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            "00:00:00",
+                            style: TextStyle(
+                                fontSize: 60,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                          ),
+                        ),
+                      ),
+                      Text(
+                        "设备ID",
+                        style: TextStyle(
+                            fontSize: 14,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer),
+                      ),
+                      SizedBox(
+                        height: 30,
+                        child: Text(
+                          activeIpt,
+                          style: TextStyle(
+                              fontSize: 10,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             Container(
               // color: Theme.of(context).colorScheme.onPrimaryContainer,
               padding: EdgeInsets.only(top: 2, bottom: 0),
@@ -59,29 +117,31 @@ class _ViewPremiumState extends State<ViewPremium> {
             ),
             // SizedBox(height: 2),
             SizedBox(
-              child: Yloding.buildr<List<Price>>(
-                future: fetchData,
-                builder: (context, snapshot) {
-                  return SizedBox(
-                    height: 200,
-                    child: ListView.builder(
+              height: 200,
+              child: prices.isNotEmpty
+                  ? ListView.builder(
                       scrollDirection: Axis.horizontal,
                       physics: BouncingScrollPhysics(), // 设置回弹效果
-                      itemCount: snapshot.data?.length,
+                      itemCount: prices.length,
                       itemBuilder: (context, index) {
                         return YCard(
-                          price: snapshot.data![index],
+                          price: prices[index],
                         );
                       },
+                    )
+                  : Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.cloud_download_outlined),
+                          Text("Loding..."),
+                        ],
+                      ),
                     ),
-                  );
-                },
-              ),
             ),
-            Text(activeIpt),
             Container(
               padding: EdgeInsets.only(left: 20, right: 20),
-              margin: EdgeInsets.only(top: 10, bottom: 2),
+              margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 children: [
                   Expanded(
@@ -96,11 +156,8 @@ class _ViewPremiumState extends State<ViewPremium> {
                 ],
               ),
             ),
-            
             ElevatedButton(
-              onPressed: () {
-                
-              },
+              onPressed: () {},
               child: Text("Active"),
             ),
           ],

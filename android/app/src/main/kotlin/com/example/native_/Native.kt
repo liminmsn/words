@@ -15,7 +15,6 @@ class Native(flutterEngine: FlutterEngine, context: Context) {
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "com.example.words.native")
     private val map: Map<String, NativeItem> = mapOf(
         "PlatformVersion" to PlatformVersion(context),
-        "TakeScreen" to TaskScene()
     )
 
     init {
