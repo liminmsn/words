@@ -6,8 +6,8 @@
 			<view class="li_item">密钥类型</view>
 			<view class="li_item">激活状态</view>
 		</view>
-		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10" :page-current="current"
-			v-slot:default="{data, loading, error, pagination}">
+		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10"
+			:page-current="current" v-slot:default="{data, loading, error, pagination}">
 			<scroll-view scroll-y class="scview">
 				<view v-if="error">{{error.message}}</view>
 				<view v-else-if="loading">正在加载...</view>
@@ -68,11 +68,27 @@
 				</view>
 			</view>
 		</unicloud-db>
+		<input type="text" placeholder="激活码" style="padding: 2vh;" v-model="ipt_val" />
+		<button @click="active">激活</button>
 	</view>
 </template>
 
 <script setup lang="ts">
 	import { ref } from 'vue';
+	const ipt_val = ref("MTc0MDM4NTI1MTEwOQ==");
+	async function active() {
+		const res = await uni.request({
+			method: 'GET',
+			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/active',
+			data: {
+				"key": ipt_val.value
+			},
+			header: {
+				'deviceId': "1234"
+			}
+		}).then();
+	}
+
 	const udb = ref();
 	const current = ref(1);
 	//切换分页

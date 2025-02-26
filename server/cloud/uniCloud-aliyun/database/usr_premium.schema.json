@@ -1,26 +1,24 @@
+// 文档教程: https://uniapp.dcloud.net.cn/uniCloud/schema
 {
 	"bsonType": "object",
-	"required": ["deviceId", "activeTime", "key", "keyType"],
+	"required": ["Price", "label1", "label2"],
 	"permission": {
 		"read": true,
-		"create": true,
-		"update": true,
+		"create": false,
+		"update": false,
 		"delete": false
 	},
 	"properties": {
 		"_id": {
 			"description": "ID，系统自动生成"
 		},
-		"deviceId": {
+		"price": {
 			"bsonType": "string"
 		},
-		"key": {
+		"label1": {
 			"bsonType": "string"
 		},
-		"keyType": {
-			"bsonType": "int"
-		},
-		"activeTime": {
+		"label2": {
 			"bsonType": "string"
 		}
 	}

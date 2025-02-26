@@ -30,7 +30,7 @@ class YImage extends StatelessWidget {
                 bottom: 0,
                 top: 40,
                 child: Icon(
-                  Icons.sell,
+                  Icons.bedtime,
                   color: Colors.white,
                   size: 200,
                 ),

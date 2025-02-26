@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:words/components/y_loding.dart';
+import 'package:words/native/native_main.dart';
+import 'package:words/net/request.dart';
 
 class ViewPremium extends StatefulWidget {
   const ViewPremium({super.key});
@@ -8,33 +11,109 @@ class ViewPremium extends StatefulWidget {
 }
 
 class _ViewPremiumState extends State<ViewPremium> {
+  late bool show = false;
+  late List<Price> prices;
+  late String activeIpt = "";
+
+  Future<List<Price>> fetchData() async {
+    // var res = await YRequest.getPrice();
+    // if (res != null) {
+    //   return res;
+    // } else {
+    //   return [];
+    // }
+    return [];
+  }
+  //激活
+  void activeCode(){
+
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(), // 设置回弹效果
-              itemCount: 4,
-              itemBuilder: (context, index) {
-                return YCard();
-              },
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              // color: Theme.of(context).colorScheme.onPrimaryContainer,
+              padding: EdgeInsets.only(top: 2, bottom: 0),
+              child: Row(
+                children: [
+                  SizedBox(width: 20),
+                  Text(
+                    "暂时没有接入合适的第三方支付，请到微信公众号关注获取订阅 ",
+                    style: TextStyle(
+                        fontSize: 8,
+                        color: Theme.of(context).colorScheme.primary),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+            // SizedBox(height: 2),
+            SizedBox(
+              child: Yloding.buildr<List<Price>>(
+                future: fetchData,
+                builder: (context, snapshot) {
+                  return SizedBox(
+                    height: 200,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(), // 设置回弹效果
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index) {
+                        return YCard(
+                          price: snapshot.data![index],
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
+            Text(activeIpt),
+            Container(
+              padding: EdgeInsets.only(left: 20, right: 20),
+              margin: EdgeInsets.only(top: 10, bottom: 2),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      // obscureText: true,
+                      decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          labelText: 'Active Code'),
+                      onChanged: (value) => activeIpt = value,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            ElevatedButton(
+              onPressed: () {
+                
+              },
+              child: Text("Active"),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
+//vip卡片
 class YCard extends StatelessWidget {
-  const YCard({super.key});
+  final Price price;
+  const YCard({super.key, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +134,7 @@ class YCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "¥6.00",
+                        price.price,
                         style: TextStyle(
                           color: labelColor,
                           fontSize: 30,
@@ -66,16 +145,16 @@ class YCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.check_circle,
-                            size: 30,
+                            size: 25,
                             color: labelColor,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "写真滚动预览",
+                            price.label1,
                             style: TextStyle(
                               color: labelColor,
                               fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                              // fontSize: 16,
                             ),
                           ),
                         ],
@@ -85,12 +164,12 @@ class YCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.check_circle,
-                            size: 30,
+                            size: 25,
                             color: labelColor,
                           ),
                           SizedBox(width: 10),
                           Text(
-                            "收藏无水印滚动预览",
+                            price.label2,
                             style: TextStyle(
                               color: labelColor,
                               // fontSize: 18,
@@ -128,7 +207,7 @@ class YCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "点击二维码微信赏码\n赞获取激活码",
+                    "点击二维码复制\n微信公众号:Alluring",
                     style: TextStyle(fontSize: 8, color: labelColor),
                   ),
                   IconButton(
@@ -147,3 +226,4 @@ class YCard extends StatelessWidget {
     );
   }
 }
+//弹窗
