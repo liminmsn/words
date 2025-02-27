@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:words/components/y_loding.dart';
 import 'package:words/native/native_main.dart';
@@ -10,16 +12,19 @@ class ViewPremium extends StatefulWidget {
   State<ViewPremium> createState() => _ViewPremiumState();
 }
 
-class _ViewPremiumState extends State<ViewPremium> {
+class _ViewPremiumState extends State<ViewPremium>
+    with SingleTickerProviderStateMixin {
   late bool show = false;
   late List<Price> prices = [];
-  late String activeIpt = "1";
+  late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
+  late String mobeid = "";
+
+  late AnimationController _controller;
+  late Animation<double> _animation;
 
   Future<List<Price>> fetchData() async {
-    activeIpt = await NativeMain.uuid;
-    setState(() {
-      activeIpt = activeIpt;
-    });
+    mobeid = await NativeMain.uuid;
+    setState(() => mobeid = mobeid);
     var res = await YRequest.getPrice();
     if (res != null) {
       setState(() {
@@ -32,12 +37,61 @@ class _ViewPremiumState extends State<ViewPremium> {
   }
 
   //激活
-  void activeCode() {}
+  void activeCode() async {
+    var res = await YRequest.active(activeIpt);
+    print(res);
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return SimpleDialog(
+          children: <Widget>[
+            Container(
+              padding: EdgeInsets.only(top: 40, bottom: 40),
+              child: Column(
+                children: [
+                  RotationTransition(
+                    turns: _animation,
+                    child: Icon(
+                      Icons.sync,
+                      size: 50.0,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                  Text(res.msg)
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   void initState() {
     super.initState();
     fetchData();
+
+    super.initState();
+    _controller = AnimationController(
+      duration: Duration(seconds: 5),
+      vsync: this,
+    );
+
+    _animation = Tween(begin: 0.0, end: 2 * 3.14159).animate(_controller)
+      ..addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          _controller.repeat();
+        }
+      });
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,7 +141,7 @@ class _ViewPremiumState extends State<ViewPremium> {
                       SizedBox(
                         height: 30,
                         child: Text(
-                          activeIpt,
+                          mobeid,
                           style: TextStyle(
                               fontSize: 10,
                               color: Theme.of(context)
@@ -133,14 +187,23 @@ class _ViewPremiumState extends State<ViewPremium> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.cloud_download_outlined),
-                          Text("Loding..."),
+                          Icon(
+                            Icons.cloud_download_outlined,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          Text(
+                            "Loding...",
+                            style: TextStyle(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onPrimaryContainer),
+                          ),
                         ],
                       ),
                     ),
             ),
             Container(
-              padding: EdgeInsets.only(left: 20, right: 20),
+              padding: EdgeInsets.only(left: 15, right: 15),
               margin: EdgeInsets.only(top: 10, bottom: 10),
               child: Row(
                 children: [
@@ -157,7 +220,7 @@ class _ViewPremiumState extends State<ViewPremium> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: activeCode,
               child: Text("Active"),
             ),
           ],

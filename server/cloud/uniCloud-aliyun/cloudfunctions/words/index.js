@@ -57,17 +57,17 @@ exports.main = async (event, context) => {
 							if (res_3['affectedDocs'] == 1) {
 								return {
 									code: 1,
-									mag: "激活成功"
+									msg: "激活成功"
 								}
 							}
 						}
 						return {
 							code: 0,
-							mag: "激活失败",
+							msg: "激活失败",
 						};
 					}
 					return {
-						code: 0, mag: "激活码无效",
+						code: 0, msg: "激活码无效",
 					};
 			}
 			break;

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:words/native/native_main.dart';
 
 class YRequest {
   // static final String url = "https://fulitu.neocities.org";
@@ -34,6 +35,17 @@ class YRequest {
     return null;
     // return utf8.decode(res.bodyBytes);
   }
+
+  //激活
+  static Future<ActiveRes> active(String key) async {
+    final Uri url = Uri.parse("$url_server/active?key=$key");
+    var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
+    if (res.statusCode == 200) {
+      Map<String, dynamic> jsonMap = jsonDecode(utf8.decode(res.bodyBytes));
+      return ActiveRes(code: jsonMap['code'], msg: jsonMap['msg']);
+    }
+    return ActiveRes(code: 0, msg: "激活错误");
+  }
 }
 
 class Price {
@@ -50,4 +62,10 @@ class Price {
       label2: json['label2'],
     );
   }
+}
+
+class ActiveRes {
+  final int code;
+  final String msg;
+  ActiveRes({required this.code, required this.msg});
 }
