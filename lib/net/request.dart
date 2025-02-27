@@ -62,6 +62,14 @@ class Price {
       label2: json['label2'],
     );
   }
+  
+  Map<String, dynamic> toJson() {
+    return {
+      'price': price,
+      'label1': label1,
+      'label2': label2,
+    };
+  }
 }
 
 class ActiveRes {

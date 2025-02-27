@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:words/components/y_loding.dart';
 import 'package:words/native/native_main.dart';
 import 'package:words/net/request.dart';
+import 'package:words/script/prices_data.dart';
 
 class ViewPremium extends StatefulWidget {
   const ViewPremium({super.key});
@@ -25,54 +26,72 @@ class _ViewPremiumState extends State<ViewPremium>
   Future<List<Price>> fetchData() async {
     mobeid = await NativeMain.uuid;
     setState(() => mobeid = mobeid);
-    var res = await YRequest.getPrice();
-    if (res != null) {
-      setState(() {
-        prices = res;
-      });
-      return res;
+    var res_ = await PricesData().get();
+
+    //如果本地已经缓存了数据（节流）
+    if (res_.isNotEmpty) {
+      setState(() => prices = res_);
+      return res_;
+      //从网络请求一次
     } else {
-      return [];
+      var res = await YRequest.getPrice();
+      if (res != null) {
+        await PricesData().set(res);
+        setState(() => prices = res);
+        return res;
+      } else {
+        return [];
+      }
     }
   }
 
   //激活
-  void activeCode() async {
-    var res = await YRequest.active(activeIpt);
-    print(res);
-    await showDialog(
+  void activeCode() {
+    _controller.forward();
+    late List<Widget> icon = [
+      RotationTransition(
+        turns: _animation,
+        child: Icon(Icons.sync,
+            size: 40, color: Theme.of(context).colorScheme.primary),
+      ),
+      Text("激活中"),
+    ];
+    late void Function(void Function()) setState_;
+    showDialog(
       context: context,
       builder: (BuildContext context) {
-        return SimpleDialog(
-          children: <Widget>[
-            Container(
-              padding: EdgeInsets.only(top: 40, bottom: 40),
-              child: Column(
-                children: [
-                  RotationTransition(
-                    turns: _animation,
-                    child: Icon(
-                      Icons.sync,
-                      size: 50.0,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                  ),
-                  Text(res.msg)
-                ],
-              ),
-            ),
-          ],
+        return StatefulBuilder(
+          builder: (context, setState) {
+            setState_ = setState;
+            return SimpleDialog(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.only(top: 40, bottom: 40),
+                  child: Column(children: icon),
+                ),
+              ],
+            );
+          },
         );
       },
     );
+    YRequest.active(activeIpt).then((res) {
+      if (!mounted) return;
+      // _controller.dispose();
+      setState_(() {
+        icon = [
+          Icon(Icons.cancel,
+              size: 40, color: Theme.of(context).colorScheme.error),
+          Text(res.msg)
+        ];
+      });
+    });
   }
 
   @override
   void initState() {
     super.initState();
     fetchData();
-
-    super.initState();
     _controller = AnimationController(
       duration: Duration(seconds: 5),
       vsync: this,
@@ -84,8 +103,6 @@ class _ViewPremiumState extends State<ViewPremium>
           _controller.repeat();
         }
       });
-
-    _controller.forward();
   }
 
   @override
