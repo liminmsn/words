@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:words/components/y_loding.dart';
 import 'package:words/native/native_main.dart';
 import 'package:words/net/request.dart';
 import 'package:words/script/prices_data.dart';
@@ -79,11 +78,19 @@ class _ViewPremiumState extends State<ViewPremium>
       if (!mounted) return;
       // _controller.dispose();
       setState_(() {
-        icon = [
-          Icon(Icons.cancel,
-              size: 40, color: Theme.of(context).colorScheme.error),
-          Text(res.msg)
-        ];
+        if (res.code == 0) {
+          icon = [
+            Icon(Icons.cancel,
+                size: 40, color: Theme.of(context).colorScheme.error),
+            Text(res.msg)
+          ];
+        }
+        if (res.code == 1) {
+          icon = [
+            Icon(Icons.check_circle, size: 40, color: Colors.lightGreen),
+            Text(res.msg)
+          ];
+        }
       });
     });
   }
