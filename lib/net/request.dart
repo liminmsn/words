@@ -22,6 +22,7 @@ class YRequest {
     }
   }
 
+  //价格列表
   static Future<List<Price>?> getPrice() async {
     final Uri url = Uri.parse("$url_server/price");
     var res = await http.get(url);
@@ -46,6 +47,14 @@ class YRequest {
     }
     return ActiveRes(code: 0, msg: "激活错误");
   }
+  //检测激活
+  static Future isactive() async {
+    final Uri url = Uri.parse("$url_server/isactive");
+    var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
+    if (res.statusCode == 200) {
+      return res;
+    }
+  }
 }
 
 class Price {
@@ -62,7 +71,7 @@ class Price {
       label2: json['label2'],
     );
   }
-  
+
   Map<String, dynamic> toJson() {
     return {
       'price': price,

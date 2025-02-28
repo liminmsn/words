@@ -12,6 +12,7 @@ class ViewBookmark extends StatefulWidget {
 
 class _ViewBookmarkState extends State<ViewBookmark> {
   late List<YImg> imgs = [];
+  late bool notbook = false;
 
   @override
   void initState() {
@@ -24,6 +25,7 @@ class _ViewBookmarkState extends State<ViewBookmark> {
     if (res.isNotEmpty) {
       setState(() {
         imgs = res;
+        notbook = true;
       });
     }
   }
@@ -31,7 +33,7 @@ class _ViewBookmarkState extends State<ViewBookmark> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: imgs.isNotEmpty
+      child: notbook
           ? GridView.builder(
               padding: const EdgeInsets.all(2),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -53,12 +55,9 @@ class _ViewBookmarkState extends State<ViewBookmark> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.image,
-                    size: 50,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  Text('No data',
+                  Icon(Icons.block,
+                      size: 40, color: Theme.of(context).colorScheme.primary),
+                  Text('No bookmark',
                       style: TextStyle(
                           color: Theme.of(context)
                               .colorScheme

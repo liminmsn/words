@@ -79,6 +79,7 @@ class _ViewPremiumState extends State<ViewPremium>
       // _controller.dispose();
       setState_(() {
         if (res.code == 0) {
+          YRequest.isactive();
           icon = [
             Icon(Icons.cancel,
                 size: 40, color: Theme.of(context).colorScheme.error),
