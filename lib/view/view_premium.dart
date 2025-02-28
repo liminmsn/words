@@ -23,7 +23,9 @@ class _ViewPremiumState extends State<ViewPremium>
   late Animation<double> _animation;
 
   Future<List<Price>> fetchData() async {
-    mobeid = await NativeMain.uuid;
+    if (Theme.of(context).platform == TargetPlatform.android) {
+      mobeid = await NativeMain.uuid;
+    }
     setState(() => mobeid = mobeid);
     var res_ = await PricesData().get();
 
