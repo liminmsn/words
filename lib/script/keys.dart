@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:words/net/request.dart';
 
@@ -6,41 +7,26 @@ class Keys {
   Keys() {
     init();
   }
-  init() async {
+  Future<ActiveState?> init() async {
     _prefs = await SharedPreferences.getInstance();
-    _prefs.getString("key") ?? _prefs.setString("key", "");
-    _prefs.getString("keyType") ?? _prefs.setString("keyType", "");
-    _prefs.getString("time") ?? _prefs.setString("time", "-1");
+    if (_prefs.getString('key') == null) {
+      var res = await YRequest.isactive();
+      _prefs.setString('key', jsonEncode(res));
+    }
+    var obj = _prefs.get('key');
+    if (obj is ActiveState) {
+      return obj;
+    }
+    return null;
   }
 
-  Future isActive() async {
-    var res = await YRequest.isactive();
-    return res;
-  }
-
-  //添加
-  add(String key, String keyType, int time) {
-    _prefs.setString("key", key);
-    _prefs.setString("keyType", keyType);
-    _prefs.setInt("time", time);
-  }
-
-  //清空
-  clear() {
-    _prefs.remove("key");
-    _prefs.remove("keyType");
-    _prefs.remove("time");
-  }
-
-  get key {
-    return _prefs.getString("key");
-  }
-
-  get keyType {
-    return _prefs.getInt("keyType");
-  }
-
-  get time {
-    return _prefs.getString("time");
+  //检查激活装
+  Future<bool> isActive() async {
+    var res = await init();
+    if (res != null) {
+      // TODO: 需要完善
+      // return ;
+    }
+    return false;
   }
 }

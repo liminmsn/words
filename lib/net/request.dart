@@ -49,15 +49,51 @@ class YRequest {
   }
 
   //检测激活
-  static Future isactive() async {
+  static Future<ActiveState> isactive() async {
     final Uri url = Uri.parse("$urlServer/isactive");
     var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
     if (res.statusCode == 200) {
-      return res;
+      if (res.body != '') {
+        Map<String, dynamic> data = jsonDecode(res.body);
+        return ActiveState(
+          key: data['key'],
+          keyType: data['keyType'],
+          activeTime: data['activeTime'],
+        );
+      }
     }
+    return ActiveState(key: '', keyType: '', activeTime: '-1');
   }
 }
 
+//激活状态
+class ActiveState {
+  final String key;
+  final String keyType;
+  final String activeTime;
+  ActiveState(
+      {required this.key, required this.keyType, required this.activeTime});
+  factory ActiveState.fromJson(Map<String, dynamic> json) {
+    return ActiveState(
+      key: json['key'],
+      keyType: json['keyType'],
+      activeTime: json['activeTime'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'key': key, 'keyType': keyType, 'activeTime': activeTime};
+  }
+}
+
+//激活
+class ActiveRes {
+  final int code;
+  final String msg;
+  ActiveRes({required this.code, required this.msg});
+}
+
+//价格
 class Price {
   final String price;
   final String label1;
@@ -80,10 +116,4 @@ class Price {
       'label2': label2,
     };
   }
-}
-
-class ActiveRes {
-  final int code;
-  final String msg;
-  ActiveRes({required this.code, required this.msg});
 }

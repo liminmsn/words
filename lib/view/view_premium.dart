@@ -84,7 +84,8 @@ class _ViewPremiumState extends State<ViewPremium>
       // _controller.dispose();
       setState_(() {
         if (res.code == 0) {
-          YRequest.isactive();
+          // TODO: 测试激活检擦
+          Keys().isActive();
           icon = [
             Icon(Icons.cancel,
                 size: 40, color: Theme.of(context).colorScheme.error),
