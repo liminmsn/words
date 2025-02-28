@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:http/http.dart' as http;
-import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/api/api_proto_detail.dart';
 import 'package:words/components/y_image.dart';

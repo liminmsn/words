@@ -6,7 +6,7 @@ import 'package:words/native/native_main.dart';
 class YRequest {
   // static final String url = "https://fulitu.neocities.org";
   static final String url = "https://www.fulitu.cc/";
-  static final String url_server =
+  static final String urlServer =
       "https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words";
   late String? url_;
   YRequest({this.url_});
@@ -24,7 +24,7 @@ class YRequest {
 
   //价格列表
   static Future<List<Price>?> getPrice() async {
-    final Uri url = Uri.parse("$url_server/price");
+    final Uri url = Uri.parse("$urlServer/price");
     var res = await http.get(url);
     if (res.statusCode == 200) {
       String body = utf8.decode(res.bodyBytes);
@@ -39,7 +39,7 @@ class YRequest {
 
   //激活
   static Future<ActiveRes> active(String key) async {
-    final Uri url = Uri.parse("$url_server/active?key=$key");
+    final Uri url = Uri.parse("$urlServer/active?key=$key");
     var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
     if (res.statusCode == 200) {
       Map<String, dynamic> jsonMap = jsonDecode(utf8.decode(res.bodyBytes));
@@ -47,9 +47,10 @@ class YRequest {
     }
     return ActiveRes(code: 0, msg: "激活错误");
   }
+
   //检测激活
   static Future isactive() async {
-    final Uri url = Uri.parse("$url_server/isactive");
+    final Uri url = Uri.parse("$urlServer/isactive");
     var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
     if (res.statusCode == 200) {
       return res;

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:words/native/native_main.dart';
 import 'package:words/net/request.dart';
+import 'package:words/script/keys.dart';
 import 'package:words/script/prices_data.dart';
 
 class ViewPremium extends StatefulWidget {
@@ -23,10 +24,12 @@ class _ViewPremiumState extends State<ViewPremium>
   late Animation<double> _animation;
 
   Future<List<Price>> fetchData() async {
-    if (Theme.of(context).platform == TargetPlatform.android) {
-      mobeid = await NativeMain.uuid;
-    }
+    mobeid = await NativeMain.uuid;
     setState(() => mobeid = mobeid);
+
+    // TODO: 测试激活检擦
+    await Keys().isActive();
+
     var res_ = await PricesData().get();
 
     //如果本地已经缓存了数据（节流）

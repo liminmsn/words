@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:transparent_image/transparent_image.dart';
 import 'package:words/api/api_photo.dart';
 import 'package:words/components/y_image.dart';
 import 'package:words/net/request.dart';
