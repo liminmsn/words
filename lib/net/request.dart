@@ -62,7 +62,7 @@ class YRequest {
         );
       }
     }
-    return ActiveState(key: '', keyType: '', activeTime: '-1');
+    return ActiveState(key: 'null', keyType: 'null', activeTime: -1);
   }
 }
 
@@ -70,7 +70,7 @@ class YRequest {
 class ActiveState {
   final String key;
   final String keyType;
-  final String activeTime;
+  final int activeTime;
   ActiveState(
       {required this.key, required this.keyType, required this.activeTime});
   factory ActiveState.fromJson(Map<String, dynamic> json) {
