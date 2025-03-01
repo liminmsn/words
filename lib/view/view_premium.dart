@@ -19,6 +19,8 @@ class _ViewPremiumState extends State<ViewPremium>
   late List<Price> prices = [];
   late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
   late String mobeid = "";
+  late ActiveState activeState =
+      ActiveState(key: '', keyType: -1, activeTime: 0);
 
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -27,8 +29,9 @@ class _ViewPremiumState extends State<ViewPremium>
     mobeid = await NativeMain.uuid;
     setState(() => mobeid = mobeid);
 
-    // TODO: 测试激活检擦
-    await Keys().isActive();
+    Keys().data().then((val) {
+      setState(() => activeState = val!);
+    });
 
     var res_ = await PricesData().get();
 
@@ -81,10 +84,8 @@ class _ViewPremiumState extends State<ViewPremium>
     );
     YRequest.active(activeIpt).then((res) {
       if (!mounted) return;
-      // _controller.dispose();
       setState_(() {
         if (res.code == 0) {
-          // TODO: 测试激活检擦
           Keys().isActive();
           icon = [
             Icon(Icons.cancel,
@@ -102,21 +103,31 @@ class _ViewPremiumState extends State<ViewPremium>
     });
   }
 
+  String keyTypeToS(int val) {
+    if (val == 0) return "1day";
+    if (val == 1) return "3day";
+    if (val == 2) return "7day";
+    return "--";
+  }
+
   @override
   void initState() {
     super.initState();
     fetchData();
+
     _controller = AnimationController(
       duration: Duration(seconds: 5),
       vsync: this,
     );
 
     _animation = Tween(begin: 0.0, end: 2 * 3.14159).animate(_controller)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _controller.repeat();
-        }
-      });
+      ..addStatusListener(
+        (status) {
+          if (status == AnimationStatus.completed) {
+            _controller.repeat();
+          }
+        },
+      );
   }
 
   @override
@@ -150,10 +161,17 @@ class _ViewPremiumState extends State<ViewPremium>
                             color:
                                 Theme.of(context).colorScheme.primaryContainer),
                       ),
+                      Text(
+                        keyTypeToS(activeState.keyType),
+                        style: TextStyle(
+                            // fontSize: 20,
+                            color:
+                                Theme.of(context).colorScheme.primaryContainer),
+                      ),
                       Expanded(
                         child: Center(
                           child: Text(
-                            "00:00:00",
+                            (DateTime.now().millisecondsSinceEpoch - activeState.activeTime).toString(),
                             style: TextStyle(
                                 fontSize: 60,
                                 color: Theme.of(context)

@@ -4,23 +4,27 @@ import 'package:words/net/request.dart';
 
 class Keys {
   late SharedPreferences _prefs;
-  Keys() {
-    init();
-  }
-  Future<ActiveState> init() async {
+  Future<ActiveState?> data() async {
     _prefs = await SharedPreferences.getInstance();
+    //本地没有存储
     if (_prefs.getString('key') == null) {
       var res = await YRequest.isactive();
-      _prefs.setString('key', jsonEncode(res));
+      //请求为空，没有激活
+      if (res != null) {
+        _prefs.setString('key', jsonEncode(res));
+      } else {
+        return null;
+      }
     }
-    var obj = ActiveState.fromJson(jsonDecode(_prefs.getString('key')!));
-    return obj;
+    return ActiveState.fromJson(jsonDecode(_prefs.getString('key')!));
   }
 
   //检查激活装
   Future<bool> isActive() async {
-    var res = await init();
-
-    return false;
+    var res = await data();
+    if (res == null) {
+      return false;
+    }
+    return true;
   }
 }

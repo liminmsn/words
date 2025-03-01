@@ -49,7 +49,7 @@ class YRequest {
   }
 
   //检测激活
-  static Future<ActiveState> isactive() async {
+  static Future<ActiveState?> isactive() async {
     final Uri url = Uri.parse("$urlServer/isactive");
     var res = await http.get(url, headers: {"deviceId": await NativeMain.uuid});
     if (res.statusCode == 200) {
@@ -62,14 +62,14 @@ class YRequest {
         );
       }
     }
-    return ActiveState(key: 'null', keyType: 'null', activeTime: -1);
+    return null;
   }
 }
 
 //激活状态
 class ActiveState {
   final String key;
-  final String keyType;
+  final int keyType;
   final int activeTime;
   ActiveState(
       {required this.key, required this.keyType, required this.activeTime});
