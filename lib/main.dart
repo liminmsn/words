@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:words/script/keys.dart';
 import 'package:words/script/prices_data.dart';
 import 'package:words/view/view_bookmark.dart';
 import 'package:words/view/view_home.dart';
@@ -83,6 +84,8 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     //每次重启清空一下价格本地缓存实现同步云端数据
     PricesData().clear();
+    //删除本地缓存的订阅数据重新获取
+    Keys.reset();
   }
 }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:words/native/native_main.dart';
 import 'package:words/net/request.dart';
 import 'package:words/script/keys.dart';
@@ -19,34 +20,43 @@ class _ViewPremiumState extends State<ViewPremium>
   late List<Price> prices = [];
   late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
   late String mobeid = "";
+  late String outTime = "";
+  // ignore: avoid_init_to_null
+  late ActiveState? activeState = null;
 
   late AnimationController _controller;
   late Animation<double> _animation;
 
   Future<List<Price>> fetchData() async {
+    //获取设备id
     mobeid = await NativeMain.uuid;
-    setState(() => mobeid = mobeid);
-
-    // TODO: 测试激活检擦
-    await Keys().isActive();
-
+    //测试激活检擦
+    activeState = (await Keys().data());
+    //获取剩余时间
+    var resOutTime = await Keys().getOutTime();
+    //获取价格列表
+    List<Price> prices_ = [];
     var res_ = await PricesData().get();
-
     //如果本地已经缓存了数据（节流）
     if (res_.isNotEmpty) {
-      setState(() => prices = res_);
-      return res_;
+      prices_ = res_;
       //从网络请求一次
     } else {
       var res = await YRequest.getPrice();
       if (res != null) {
         await PricesData().set(res);
-        setState(() => prices = res);
-        return res;
-      } else {
-        return [];
+        prices_ = res;
       }
     }
+
+    setState(() {
+      outTime = resOutTime;
+      activeState = activeState;
+      mobeid = mobeid;
+      prices = prices_;
+    });
+
+    return prices_;
   }
 
   //激活
@@ -79,13 +89,20 @@ class _ViewPremiumState extends State<ViewPremium>
         );
       },
     );
-    YRequest.active(activeIpt).then((res) {
+    YRequest.active(activeIpt).then((res) async {
       if (!mounted) return;
-      // _controller.dispose();
+      // TODO: 测试激活检擦
+      if (res.code == 1) {
+        var activeState_ = (await Keys().data());
+        var resOutTime = await Keys().getOutTime();
+        setState(() {
+          activeState = activeState_;
+          outTime = resOutTime;
+        });
+      }
+
       setState_(() {
         if (res.code == 0) {
-          // TODO: 测试激活检擦
-          Keys().isActive();
           icon = [
             Icon(Icons.cancel,
                 size: 40, color: Theme.of(context).colorScheme.error),
@@ -100,6 +117,13 @@ class _ViewPremiumState extends State<ViewPremium>
         }
       });
     });
+  }
+
+  String formKeyType(int val) {
+    if (val == 0) return '1day';
+    if (val == 1) return '3day';
+    if (val == 2) return '7day';
+    return "--";
   }
 
   @override
@@ -135,53 +159,82 @@ class _ViewPremiumState extends State<ViewPremium>
               padding: EdgeInsets.all(10),
               child: Card(
                 clipBehavior: Clip.antiAlias,
-                child: Container(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.all(10),
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Premium Time",
-                        style: TextStyle(
-                            // fontSize: 20,
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer),
-                      ),
-                      Expanded(
-                        child: Center(
-                          child: Text(
-                            "00:00:00",
+                child: Stack(
+                  children: [
+                    Container(
+                      height: 200,
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.all(10),
+                      color: Theme.of(context).colorScheme.primary,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "code: ${activeState?.key ?? '--'}",
                             style: TextStyle(
-                                fontSize: 60,
+                                fontSize: 10,
                                 color: Theme.of(context)
                                     .colorScheme
                                     .primaryContainer),
                           ),
-                        ),
-                      ),
-                      Text(
-                        "设备ID",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color:
-                                Theme.of(context).colorScheme.primaryContainer),
-                      ),
-                      SizedBox(
-                        height: 30,
-                        child: Text(
-                          mobeid,
-                          style: TextStyle(
-                              fontSize: 10,
+                          Text(
+                            "activeTime: ${activeState != null ? DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.fromMillisecondsSinceEpoch(activeState!.activeTime)).toString() : "--"}",
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                          ),
+                          Text(
+                            "type: ${formKeyType(activeState?.keyType ?? -1)}",
+                            style: TextStyle(
+                                fontSize: 10,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                // "00:00:00",
+                                outTime,
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .primaryContainer),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .colorScheme
-                                  .primaryContainer),
-                        ),
+                                  .primaryContainer,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(6)),
+                            ),
+                            // height: 30,
+                            child: Text(
+                              "deveiceId: \n$mobeid",
+                              style: TextStyle(
+                                  fontSize: 6,
+                                  color: Theme.of(context).colorScheme.primary),
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
+                    ),
+                    Positioned(
+                      right: -20,
+                      top: -20,
+                      child: Icon(Icons.circle,
+                          size: 100,
+                          color:
+                              Theme.of(context).colorScheme.primaryContainer),
+                    ),
+                  ],
                 ),
               ),
             ),
