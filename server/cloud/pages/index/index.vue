@@ -6,6 +6,7 @@
 			<view class="li_item">密钥类型</view>
 			<view class="li_item">激活状态</view>
 		</view>
+		{{key}}
 		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10" getcount
 			:page-current="current" v-slot:default="{data,pagination,loading,error,options}">
 			<scroll-view scroll-y class="scview">
@@ -17,7 +18,7 @@
 						<view class="li_item">
 							{{idx+1}}
 						</view>
-						<view class="li_item li_key" @click="()=>item.active ? '':copyText()">
+						<view class="li_item li_key" @click="()=>item.active ? '':copyText(item.key)">
 							{{item.key}}
 						</view>
 						<view class="li_item">
@@ -34,7 +35,8 @@
 							<span style="font-size: 10pt;">/</span>
 							{{Math.ceil((pagination['count'] / 10))}}
 						</label>
-						<label @click="pagination['current'] < Math.ceil((pagination['count'] / 10)) &&toggleCureent(+1)">&gt;</label>
+						<label
+							@click="pagination['current'] < Math.ceil((pagination['count'] / 10)) &&toggleCureent(+1)">&gt;</label>
 					</view>
 				</view>
 			</scroll-view>
@@ -68,7 +70,7 @@
 						<view v-else>
 							创建中...
 						</view>
-						<view v-if="show_key" style="margin-top: 10px;" @click="copyText">
+						<view v-if="show_key" style="margin-top: 10px;" @click="copyText(key)">
 							{{key}}
 						</view>
 					</view>
@@ -152,9 +154,9 @@
 		}
 	}
 
-	function copyText() {
+	function copyText(val : string) {
 		uni.setClipboardData({
-			data: key.value,
+			data: val,
 			success: function () {
 				uni.showToast({
 					title: '复制成功',
