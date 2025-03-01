@@ -57,7 +57,7 @@ class YRequest {
         Map<String, dynamic> data = jsonDecode(res.body);
         return ActiveState(
           key: data['key'],
-          keyType: int.parse(data['keyType']),
+          keyType: data['keyType'],
           activeTime: data['activeTime'],
         );
       }

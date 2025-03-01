@@ -79,6 +79,7 @@ exports.main = async (event, context) => {
 						keyType: JSON.parse(event.body)['keyType'],
 						key: btoa(time),
 						createTime: time,
+						active: false
 					};
 					const res = await db.collection("sys_keys").add(data);
 					return data;

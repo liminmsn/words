@@ -6,7 +6,6 @@
 			<view class="li_item">密钥类型</view>
 			<view class="li_item">激活状态</view>
 		</view>
-		{{key}}
 		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10" getcount
 			:page-current="current" v-slot:default="{data,pagination,loading,error,options}">
 			<scroll-view scroll-y class="scview">
@@ -40,6 +39,7 @@
 					</view>
 				</view>
 			</scroll-view>
+			<button @click="active">active</button>
 			<view class="createKey" style="display: flex;gap: 2vw;">
 				<view class="" style="width: 100%;display: flex;justify-content: center;gap: 2vw;">
 					<view class="createKey_btn" @click="show_cre = true">
@@ -86,9 +86,9 @@
 	async function active() {
 		const res = await uni.request({
 			method: 'GET',
-			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/isactive',
+			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/active',
 			data: {
-				"key": ipt_val.value
+				"key": "MTc0MDg1ODUyNzc3NQ=="
 			},
 			header: {
 				'deviceId': "1234"

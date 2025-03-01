@@ -24,7 +24,7 @@ class _ViewPremiumState extends State<ViewPremium>
   late ActiveState? activeState = null;
 
   //输入的激活码
-  late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
+  late String activeIpt = "";
   final _formKey = GlobalKey<FormState>();
 
   late AnimationController _controller;
@@ -320,6 +320,7 @@ class _ViewPremiumState extends State<ViewPremium>
                         }
                         return null;
                       },
+                      onChanged: (context)=>activeIpt = context,
                       onSaved: (value) {
                         activeIpt = value!;
                       },
