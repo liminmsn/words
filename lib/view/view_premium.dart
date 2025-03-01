@@ -33,7 +33,7 @@ class _ViewPremiumState extends State<ViewPremium>
     //测试激活检擦
     activeState = (await Keys().data());
     //获取剩余时间
-    var resOutTime = await Keys().getOutTime();
+    var resOutTime = await Keys().getActiveLabel();
     //获取价格列表
     List<Price> prices_ = [];
     var res_ = await PricesData().get();
@@ -94,7 +94,7 @@ class _ViewPremiumState extends State<ViewPremium>
       // TODO: 测试激活检擦
       if (res.code == 1) {
         var activeState_ = (await Keys().data());
-        var resOutTime = await Keys().getOutTime();
+        var resOutTime = await Keys().getActiveLabel();
         setState(() {
           activeState = activeState_;
           outTime = resOutTime;
@@ -414,7 +414,8 @@ class YCard extends StatelessWidget {
               child: Row(
                 children: [
                   Text(
-                    "点击二维码复制\n微信公众号:Alluring",
+                    "微信公众号:Alluring\n关注公众号，获取3天免费key",
+                    textAlign: TextAlign.end,
                     style: TextStyle(fontSize: 8, color: labelColor),
                   ),
                   IconButton(

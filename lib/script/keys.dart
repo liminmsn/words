@@ -18,7 +18,7 @@ class Keys {
     return ActiveState.fromJson(jsonDecode(_prefs.getString('key')!));
   }
 
-  Future<String> getOutTime() async {
+  Future<String> getActiveLabel() async {
     var data_ = await data();
     if (data_ == null) return "激活码已经过期";
 
@@ -36,6 +36,22 @@ class Keys {
     Duration difference = dateTime1.difference(dateTime2);
 
     return '剩余时间：${difference.inDays} 天 ${difference.inHours.remainder(24)} 小时 ${difference.inMinutes.remainder(60)} 分钟';
+  }
+
+  Future<bool> getActiveState() async {
+    var data_ = await data();
+    if (data_ == null) return false;
+    //累加keytype天
+    DateTime outTime = DateTime.fromMillisecondsSinceEpoch(data_.activeTime);
+    outTime = outTime.add(Duration(days: fromDay(data_.keyType)));
+    //过期时间
+    int timestamp1 = outTime.millisecondsSinceEpoch; // 第一个时间戳（毫秒）
+    //当下时间
+    int timestamp2 = DateTime.now().millisecondsSinceEpoch; // 第二个时间戳（毫秒）
+    if (timestamp1 - timestamp2 < 0) {
+      return false;
+    }
+    return true;
   }
 
   int fromDay(int val) {
