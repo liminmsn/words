@@ -101,6 +101,7 @@ class _ViewPremiumState extends State<ViewPremium>
       YRequest.active(activeIpt).then((res) async {
         if (!mounted) return;
         if (res.code == 1) {
+          await Keys.reset();
           var activeState_ = (await Keys().data());
           var resOutTime = await Keys().getActiveLabel();
           setState(() {
