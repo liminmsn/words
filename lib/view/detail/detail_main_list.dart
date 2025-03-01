@@ -6,6 +6,7 @@ import 'package:words/api/api_proto_detail.dart';
 import 'package:words/components/y_image.dart';
 import 'package:words/net/request.dart';
 import 'package:words/script/bookmark.dart';
+import 'package:words/script/keys.dart';
 
 class DetailHome extends StatefulWidget {
   final YImg item;
@@ -18,9 +19,10 @@ class DetailHome extends StatefulWidget {
 
 class _DetailHomeState extends State<DetailHome> {
   List<YImgDetail> _imgs = [];
-  late bool makeBookmark = false;
   late double height = MediaQuery.of(context).size.height * 0.8;
+  late bool makeBookmark = false;
   late bool _showTop = false;
+  late bool activeState = false;
 
   //加载数据
   Future<List<YImgDetail>> fetchData() async {
@@ -72,50 +74,44 @@ class _DetailHomeState extends State<DetailHome> {
         return Scaffold(
           backgroundColor: Colors.transparent,
           body: SizedBox(
+            height: MediaQuery.of(context).size.height,
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 10.0),
-                Text(
-                  y.title,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                  ),
-                ),
-                SizedBox(height: 10.0),
-                Container(
-                  margin: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                    color: Colors.white,
-                    width: 10,
-                    // style: BorderStyle.solid
-                  )),
+                // SizedBox(height: 10.0),
+                // Text(
+                //   y.title,
+                //   style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 18.0,
+                //   ),
+                // ),
+                // SizedBox(height: 10.0),
+                Card(
                   child: Image.network(y.src),
                 ),
                 SizedBox(height: 10.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ElevatedButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Row(
-                        children: [Text('Close'), Icon(Icons.close)],
+                    Card(
+                      child: TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Icon(Icons.highlight_off, size: 30),
                       ),
                     ),
                     SizedBox(width: 10),
-                    ElevatedButton(
-                      onPressed: () async {
-                        // 按钮点击事件
-                        await saveImage(y);
-                      },
-                      child: Row(
-                        children: [Text('Save'), Icon(Icons.download)],
+                    Card(
+                      child: TextButton(
+                        onPressed: () async {
+                          await saveImage(y);
+                        },
+                        child: Icon(Icons.arrow_circle_down, size: 30),
                       ),
                     ),
-                    SizedBox(width: 10),
                   ],
                 )
               ],
@@ -129,24 +125,13 @@ class _DetailHomeState extends State<DetailHome> {
   //加载数据
   getData() async {
     var isExist = await Bookmark.isExist(widget.item);
-    setState(() => makeBookmark = isExist);
     var data = await fetchData();
-    setState(() => _imgs = data);
-  }
-
-  final ScrollController _scrollController = ScrollController();
-  @override
-  void initState() {
-    super.initState();
-    getData();
-    _scrollController.addListener(_scrollListener);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_scrollListener);
-    _scrollController.dispose();
-    super.dispose();
+    var isactive = await Keys().getActiveState();
+    setState(() {
+      _imgs = data;
+      makeBookmark = isExist;
+      activeState = isactive;
+    });
   }
 
   //大于500显示top按钮
@@ -165,6 +150,21 @@ class _DetailHomeState extends State<DetailHome> {
       duration: Duration(milliseconds: 500),
       curve: Curves.easeInOut,
     );
+  }
+
+  final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    getData();
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_scrollListener);
+    _scrollController.dispose();
+    super.dispose();
   }
 
   @override
@@ -191,7 +191,7 @@ class _DetailHomeState extends State<DetailHome> {
         ],
       ),
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: activeState ? null : NeverScrollableScrollPhysics(),
         controller: _scrollController,
         child: Column(
           children: [
@@ -199,7 +199,7 @@ class _DetailHomeState extends State<DetailHome> {
               GestureDetector(
                 onTap: () => onTap(_imgs[i]),
                 // onLongPress: () => onTap(_imgs[i]),
-                child: YImage(url: _imgs[i].src, sy: true),
+                child: YImage(url: _imgs[i].src, sy: activeState == false),
               ),
           ],
         ),

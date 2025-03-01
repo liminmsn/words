@@ -91,7 +91,6 @@ class _ViewPremiumState extends State<ViewPremium>
     );
     YRequest.active(activeIpt).then((res) async {
       if (!mounted) return;
-      // TODO: 测试激活检擦
       if (res.code == 1) {
         var activeState_ = (await Keys().data());
         var resOutTime = await Keys().getActiveLabel();
