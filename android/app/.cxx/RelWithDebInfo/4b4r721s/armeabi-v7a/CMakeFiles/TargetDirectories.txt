@@ -1,0 +1,2 @@
+C:/Users/limin/Desktop/words/android/app/.cxx/RelWithDebInfo/4b4r721s/armeabi-v7a/CMakeFiles/edit_cache.dir
+C:/Users/limin/Desktop/words/android/app/.cxx/RelWithDebInfo/4b4r721s/armeabi-v7a/CMakeFiles/rebuild_cache.dir
