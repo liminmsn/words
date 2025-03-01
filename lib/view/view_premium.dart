@@ -130,17 +130,20 @@ class _ViewPremiumState extends State<ViewPremium>
   void initState() {
     super.initState();
     fetchData();
+
     _controller = AnimationController(
       duration: Duration(seconds: 5),
       vsync: this,
     );
 
     _animation = Tween(begin: 0.0, end: 2 * 3.14159).animate(_controller)
-      ..addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          _controller.repeat();
-        }
-      });
+      ..addStatusListener(
+        (status) {
+          if (status == AnimationStatus.completed) {
+            _controller.repeat();
+          }
+        },
+      );
   }
 
   @override

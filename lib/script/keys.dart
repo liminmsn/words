@@ -7,6 +7,7 @@ class Keys {
   late SharedPreferences _prefs;
   Future<ActiveState?> data() async {
     _prefs = await SharedPreferences.getInstance();
+    //本地没有存储
     if (_prefs.getString('key') == null) {
       //重置激活
       var res = await YRequest.isactive();
