@@ -18,11 +18,14 @@ class _ViewPremiumState extends State<ViewPremium>
     with SingleTickerProviderStateMixin {
   late bool show = false;
   late List<Price> prices = [];
-  late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
   late String mobeid = "";
   late String outTime = "";
   // ignore: avoid_init_to_null
   late ActiveState? activeState = null;
+
+  //输入的激活码
+  late String activeIpt = "MTc0MDM4NTQ1NTMxMQ==";
+  final _formKey = GlobalKey<FormState>();
 
   late AnimationController _controller;
   late Animation<double> _animation;
@@ -61,61 +64,69 @@ class _ViewPremiumState extends State<ViewPremium>
 
   //激活
   void activeCode() {
-    _controller.forward();
-    late List<Widget> icon = [
-      RotationTransition(
-        turns: _animation,
-        child: Icon(Icons.sync,
-            size: 40, color: Theme.of(context).colorScheme.primary),
-      ),
-      Text("激活中"),
-    ];
-    late void Function(void Function()) setState_;
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            setState_ = setState;
-            return SimpleDialog(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.only(top: 40, bottom: 40),
-                  child: Column(children: icon),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-    YRequest.active(activeIpt).then((res) async {
-      if (!mounted) return;
-      if (res.code == 1) {
-        var activeState_ = (await Keys().data());
-        var resOutTime = await Keys().getActiveLabel();
-        setState(() {
-          activeState = activeState_;
-          outTime = resOutTime;
-        });
-      }
-
-      setState_(() {
-        if (res.code == 0) {
-          icon = [
-            Icon(Icons.cancel,
-                size: 40, color: Theme.of(context).colorScheme.error),
-            Text(res.msg)
-          ];
-        }
+    if (_formKey.currentState!.validate()) {
+      // If the form is valid, display a snackbar. In the real world,
+      // you'd often call a server or save the information in a database.
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   const SnackBar(content: Text('Processing Data')),
+      // );
+      _controller.forward();
+      late List<Widget> icon = [
+        RotationTransition(
+          turns: _animation,
+          child: Icon(Icons.sync,
+              size: 40, color: Theme.of(context).colorScheme.primary),
+        ),
+        Text("激活中"),
+      ];
+      late void Function(void Function()) setState_;
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              setState_ = setState;
+              return SimpleDialog(
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.only(top: 40, bottom: 40),
+                    child: Column(children: icon),
+                  ),
+                ],
+              );
+            },
+          );
+        },
+      );
+      YRequest.active(activeIpt).then((res) async {
+        if (!mounted) return;
         if (res.code == 1) {
-          icon = [
-            Icon(Icons.check_circle, size: 40, color: Colors.lightGreen),
-            Text(res.msg)
-          ];
+          var activeState_ = (await Keys().data());
+          var resOutTime = await Keys().getActiveLabel();
+          setState(() {
+            activeState = activeState_;
+            outTime = resOutTime;
+          });
         }
+
+        setState_(() {
+          if (res.code == 0) {
+            icon = [
+              Icon(Icons.cancel,
+                  size: 40, color: Theme.of(context).colorScheme.error),
+              Text(res.msg)
+            ];
+          }
+          if (res.code == 1) {
+            icon = [
+              Icon(Icons.check_circle, size: 40, color: Colors.lightGreen),
+              Text(res.msg)
+            ];
+          }
+        });
       });
-    });
+    }
+    return;
   }
 
   String formKeyType(int val) {
@@ -288,26 +299,37 @@ class _ViewPremiumState extends State<ViewPremium>
                       ),
                     ),
             ),
-            Container(
-              padding: EdgeInsets.only(left: 15, right: 15),
-              margin: EdgeInsets.only(top: 10, bottom: 10),
-              child: Row(
+            Form(
+              key: _formKey,
+              child: Column(
                 children: [
-                  Expanded(
-                    child: TextField(
+                  Container(
+                    padding: EdgeInsets.only(left: 15, right: 15),
+                    margin: EdgeInsets.only(top: 10, bottom: 10),
+                    child: TextFormField(
                       // obscureText: true,
                       decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Active Code'),
-                      onChanged: (value) => activeIpt = value,
+                      validator: (value) {
+                        RegExp regex = RegExp(
+                            r'(?=.*[a-zA-Z0-9!@#\$%^&*])[\w!@#\$%^&*]{10,}');
+                        if (!regex.hasMatch(value!)) {
+                          return '激活码由20个大小写英文、数字和符号组成';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) {
+                        activeIpt = value!;
+                      },
                     ),
+                  ),
+                  ElevatedButton(
+                    onPressed: activeCode,
+                    child: Text("Active"),
                   ),
                 ],
               ),
-            ),
-            ElevatedButton(
-              onPressed: activeCode,
-              child: Text("Active"),
             ),
           ],
         ),
