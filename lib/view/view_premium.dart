@@ -130,10 +130,11 @@ class _ViewPremiumState extends State<ViewPremium>
   }
 
   String formKeyType(int val) {
-    if (val == 0) return '1day';
-    if (val == 1) return '3day';
-    if (val == 2) return '7day';
-    return "--";
+    if (val == -1) return "0day";
+    // if (val == 0) return '1day';
+    // if (val == 1) return '3day';
+    // if (val == 2) return '7day';
+    return "$val day";
   }
 
   @override

@@ -43,7 +43,8 @@ class Keys {
     if (data_ == null) return false;
     //累加keytype天
     DateTime outTime = DateTime.fromMillisecondsSinceEpoch(data_.activeTime);
-    outTime = outTime.add(Duration(days: fromDay(data_.keyType)));
+    // outTime = outTime.add(Duration(days: fromDay(data_.keyType)));
+    outTime = outTime.add(Duration(days: data_.keyType));
     //过期时间
     int timestamp1 = outTime.millisecondsSinceEpoch; // 第一个时间戳（毫秒）
     //当下时间
