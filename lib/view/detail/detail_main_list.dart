@@ -103,15 +103,15 @@ class _DetailHomeState extends State<DetailHome> {
                         child: Icon(Icons.highlight_off, size: 30),
                       ),
                     ),
-                    SizedBox(width: 10),
-                    Card(
-                      child: TextButton(
-                        onPressed: () async {
-                          await saveImage(y);
-                        },
-                        child: Icon(Icons.arrow_circle_down, size: 30),
-                      ),
-                    ),
+                    // SizedBox(width: 10),
+                    // Card(
+                    //   child: TextButton(
+                    //     onPressed: () async {
+                    //       await saveImage(y);
+                    //     },
+                    //     child: Icon(Icons.arrow_circle_down, size: 30),
+                    //   ),
+                    // ),
                   ],
                 )
               ],
