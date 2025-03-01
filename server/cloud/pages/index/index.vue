@@ -6,13 +6,14 @@
 			<view class="li_item">密钥类型</view>
 			<view class="li_item">激活状态</view>
 		</view>
-		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10"
-			:page-current="current" v-slot:default="{data, loading, error, pagination}">
+		<unicloud-db ref="udb" class="body" collection="sys_keys" orderby="createTime desc" :page-size="10" getcount
+			:page-current="current" v-slot:default="{data,pagination,loading,error,options}">
 			<scroll-view scroll-y class="scview">
 				<view v-if="error">{{error.message}}</view>
-				<view v-else-if="loading">正在加载...</view>
+				<view v-else-if="loading" style="text-align: center;margin-top: 10px;">正在加载...</view>
 				<view v-else>
-					<view v-for="(item,idx) in data" class="li">
+					<view v-if="data.length == 0" style="text-align: center;margin-top: 10px;">无数据</view>
+					<view v-else v-for="(item,idx) in data" class="li">
 						<view class="li_item">
 							{{idx+1}}
 						</view>
@@ -20,17 +21,20 @@
 							{{item.key}}
 						</view>
 						<view class="li_item">
-							{{formType(item.keyType * 1)}}
+							{{item.keyType}}天
 						</view>
 						<view class="li_item">
 							<checkbox style="transform: scale(0.6);" color="#4cd964" :checked="item.active" />
 						</view>
 					</view>
-					<view class="page">
+					<view class="page" v-show="data.length>0">
 						<label @click="current > 1 && toggleCureent(-1)">&lt;</label>
-						<label>{{pagination['current']}} <span style="font-size: 10pt;">/</span>
-							{{pagination['count']+1}}</label>
-						<label @click="current < pagination['count']+1 && toggleCureent(+1)">&gt;</label>
+						<label>
+							{{pagination['current']}}
+							<span style="font-size: 10pt;">/</span>
+							{{Math.ceil((pagination['count'] / 10))}}
+						</label>
+						<label @click="pagination['current'] < Math.ceil((pagination['count'] / 10)) &&toggleCureent(+1)">&gt;</label>
 					</view>
 				</view>
 			</scroll-view>
@@ -46,30 +50,31 @@
 				<view class="createkey_body" v-if="show_cre">
 					<view class="createkey_body_content">
 						<view style="margin-bottom: 2vw;">会员key</view>
-						<radio-group style="margin-block: 5vw;">
-							<radio v-for="(item,index) in items" :value="item.value" :checked="index === current_"
-								@click="current_ = index">
+						<radio-group style="margin-block: 2vw;">
+							<radio v-for="(item,index) in items" :key="index" :value="item.value.toString()"
+								:checked="index === current_" @click="current_ = index,keyType = item.value">
 								{{item.name}}
 								&nbsp;&nbsp;&nbsp;
 							</radio>
 						</radio-group>
-						<view v-if="show_cre_btn" class="createkey_body_content_btns"
-							style="margin-bottom: 2vw;text-align: right;">
-							<label @click="show_cre = false">关闭</label>
+						<view class="ipt">
+							<!-- <text>天</text> -->
+							<input maxlength="2" v-model="keyType" />
+						</view>
+						<view v-if="show_cre_btn" class="createkey_body_content_btns" style="text-align: center;">
 							<label @click="createKey">创建</label>
+							<label @click="show_cre = false">关闭</label>
 						</view>
 						<view v-else>
 							创建中...
 						</view>
-						<view v-if="show_key" style="margin-top: 5vw;" @click="copyText">
+						<view v-if="show_key" style="margin-top: 10px;" @click="copyText">
 							{{key}}
 						</view>
 					</view>
 				</view>
 			</view>
 		</unicloud-db>
-		<input type="text" placeholder="激活码" style="padding: 2vh;" v-model="ipt_val" />
-		<button @click="active">激活</button>
 	</view>
 </template>
 
@@ -95,35 +100,29 @@
 	//切换分页
 	function toggleCureent(val : 0 | 1 | -1) {
 		if (val == 0) {
+			current.value = 1;
 			udb.value['clear']();
-			udb.value['loadData']();
+			setTimeout(() => udb.value['loadData'](), 100);
 			return;
 		}
 		current.value += val;
 		udb.value['clear']();
-	}
-	//格式化订阅类型
-	function formType(val : number) {
-		switch (val) {
-			case 0: return '1天';
-			case 1: return '3天';
-			case 2: return '7天';
-		}
+		setTimeout(() => udb.value['loadData'](), 100);
 	}
 	//创建key
 	const items = [
 		{
-			value: 0,
-			name: '3天',
+			value: 1,
+			name: '1天',
 			checked: 'true'
 		},
 		{
-			value: 1,
-			name: '7天',
+			value: 3,
+			name: '3天',
 		},
 		{
-			value: 2,
-			name: '30天',
+			value: 7,
+			name: '7天',
 		},
 	];
 	const current_ = ref(0);
@@ -131,6 +130,7 @@
 	const show_cre_btn = ref(true);
 	const show_key = ref(false);
 	const key = ref("");
+	const keyType = ref(1);
 	async function createKey() {
 		show_cre_btn.value = false;
 		show_key.value = false;
@@ -138,7 +138,7 @@
 			method: 'POST',
 			url: 'https://fc-mp-00fbb6fa-0b8f-41d8-ac0c-122a477de70e.next.bspapp.com/words/createkey',
 			data: {
-				'keyType': items[current_.value].value
+				'keyType': keyType.value
 			},
 			header: {
 				'id': "1234"
@@ -150,7 +150,6 @@
 			show_key.value = true;
 			show_cre_btn.value = true;
 		}
-		console.log(res.data);
 	}
 
 	function copyText() {
@@ -219,12 +218,19 @@
 		}
 
 		.createKey {
+			margin-top: 10px;
 			text-align: center;
 
 			.createKey_btn {
+				padding: 5px;
 				width: 20%;
 				border: 0.1px solid $uni-border-color;
 				background-color: $uni-bg-color-hover;
+				transition: 25ms ease all;
+
+				&:active {
+					transform: scale(0.99);
+				}
 			}
 
 			.createkey_body {
@@ -238,23 +244,59 @@
 				.createkey_body_content {
 					margin: auto;
 					margin-top: 20vh;
-					width: 80vw;
+					width: 300px;
 					background-color: white;
 					border-radius: 5vw;
 					box-sizing: border-box;
 					padding: 5vw;
+					display: flex;
+					flex-direction: column;
+
+					.ipt {
+						// height: 30px;
+						margin-bottom: 20px;
+						display: flex;
+						justify-content: center;
+
+						input {
+							height: 30px;
+							flex: 0.3;
+							box-sizing: border-box;
+							border: 0.1px solid $uni-border-color;
+							position: relative;
+
+							&::before {
+								height: 100%;
+								position: absolute;
+								right: 10%;
+								opacity: 0.2;
+								// background-color: red;
+								content: '天';
+								line-height: 1.8;
+							}
+						}
+					}
 
 					.createkey_body_content_btns {
-						label {
-							padding: 2vw;
-							color: white;
-							background-color: $uni-color-warning;
-							margin-right: 2vw;
-							border-radius: 2vw;
+						height: 30px;
+						// display: flex;
+						// justify-content: center;
 
-							&:nth-child(2) {
-								background-color: $uni-color-primary;
-							}
+						label {
+							display: inline-block;
+							line-height: 2;
+							height: 100%;
+							// padding: 2vw;
+							padding: 0 10px;
+							// color: white;
+							// background-color: $uni-color-warning;
+							margin-right: 2vw;
+							border: 0.1px solid $uni-border-color;
+							background-color: $uni-bg-color-hover;
+
+							// &:nth-child(2) {
+							// 	background-color: $uni-color-primary;
+							// }
 						}
 					}
 				}
