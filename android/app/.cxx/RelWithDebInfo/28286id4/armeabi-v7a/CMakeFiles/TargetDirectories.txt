@@ -1,0 +1,2 @@
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/RelWithDebInfo/28286id4/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/yangzaitao/Desktop/gitProject/words/android/app/.cxx/RelWithDebInfo/28286id4/armeabi-v7a/CMakeFiles/rebuild_cache.dir
